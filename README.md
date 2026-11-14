@@ -79,8 +79,12 @@ To use them in one project only, copy them into that project's `.claude/skills/`
 ### claude.ai and the desktop app
 
 1. Click **Code › Download ZIP** on this page and unzip it.
-2. Zip each skill folder on its own (`web-launch-checklist.zip`, `web-design-playbook.zip`).
-3. In **Settings › Capabilities**, turn on code execution, then upload each ZIP under **Skills**.
+2. Zip each skill folder on its own, so the folder sits at the top of the ZIP (`web-launch-checklist.zip` opens to `web-launch-checklist/SKILL.md`). On Windows, right-click the folder › **Compress to ZIP file**; on a Mac, right-click › **Compress**.
+3. In **Settings › Capabilities**, check that **Code execution and file creation** is on (called **Create and edit files** in the newer layout). Skills need it.
+4. Go to **[Customize › Skills](https://claude.ai/customize/skills)**, click **+**, then **Create skill › Upload a skill**, and upload one ZIP. Repeat for the other.
+5. Make sure both skills are toggled on in the list.
+
+On Team and Enterprise plans, an owner has to allow skills first in **Organization settings › Plugins & skills**. Skills you upload to claude.ai also load in Claude Code when you're signed in with the same account (Claude Code v2.1.273 or later), so you don't need to install them twice.
 
 ### For the scripts (optional)
 
