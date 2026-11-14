@@ -23,18 +23,19 @@ It helps you:
 - **Avoid phone-only bugs.** iPhone zooming into forms, the Android keyboard hiding your buttons, pages that won't scroll, layouts that drift sideways.
 - **Get paid without surprises.** Setting up Paddle or a similar merchant of record: the legal pages they require before approving your site, webhooks that "succeed" but don't unlock anything, a customer paying with a different email than the one they signed up with, prices in the wrong currency for a country.
 - **Move to your own domain safely.** Redirecting only when the new address is ready, and never asking users to reinstall the app before they have a backup (on iPhone, a reinstalled app starts with empty data).
-- **Launch in several languages.** Testing the longest language, keeping the visitor's language from page to page, and matching demos to the visitor's country.
+- **Launch in several languages.** Testing the longest language, keeping the visitor's language from page to page, matching demos to the visitor's country, and making every language findable on Google when one page translates itself with `?lang=` (Google most likely sees such a page in English and drops the other languages otherwise).
 - **Build app features without a server.** Updates that reach installed phones without interrupting someone mid-entry, reminders through calendar files, PDF and Excel reports made on the device, imports from the CSV files Excel really produces, backups people can trust.
-- **Catch problems automatically, and trust the checks.** Five scripts (below), a GitHub Actions template that runs them on every push, and a guide to the ways a check can pass without testing anything: a selector that quietly retargets, a pipe that hides the exit code, a skip that covers too much, an animation caught mid-fade only on the CI runner.
+- **Catch problems automatically, and trust the checks.** Six scripts (below), a GitHub Actions template that runs them on every push, and a guide to the ways a check can pass without testing anything: a selector that quietly retargets, a pipe that hides the exit code, a skip that covers too much, an animation caught mid-fade only on the CI runner.
 
-It comes with five scripts:
+It comes with six scripts:
 
 | Script | What it catches |
 |---|---|
-| `check-static.mjs` | Reads the files, no browser or install needed: paths with the wrong letter case (fine on Windows and Mac, 404 on the server), broken internal links, canonical URLs, share images, sitemap and `robots.txt` that disagree, a hand-copied footer that drifted on one page, `mailto:` forms, a 404 page with relative paths, published files no page links to |
+| `check-static.mjs` | Reads the files, no browser or install needed: paths with the wrong letter case (fine on Windows and Mac, 404 on the server), broken internal links, canonical URLs, share images, sitemap and `robots.txt` that disagree, a hand-copied footer that drifted on one page, `mailto:` forms, a 404 page with relative paths, scripts that fetch relative paths (they break on the 404 page), language tags Google rejects or a canonical URL that hides your other languages, published files no page links to |
 | `check-pages.mjs` | Opens every page at phone, tablet and desktop sizes, in each language and colour scheme: what overflows, what's cut off at an edge, where the header wraps, plus script errors, failed requests and requests your security policy blocks. Saves screenshots |
 | `check-states.mjs` | Contrast of every link and button on hover, keyboard focus and press, not just at rest (where accessibility scanners stop), and buttons that show no focus at all |
 | `make-share-card.mjs` | Builds the link-preview image from an HTML template with your real fonts and colours, instead of a hand-edited picture that goes stale |
+| `make-favicon.mjs` | Builds the `favicon.ico` search engines ask for, from your SVG icon |
 | `bump-version.mjs` | Raises the version everywhere an installed app keeps it, or sets a fresh `?v=` on every stylesheet and script so phones stop using cached copies |
 
 ### `web-design-playbook`: so your product looks considered, not templated
@@ -81,7 +82,7 @@ To use them in one project only, copy them into that project's `.claude/skills/`
 
 ### For the scripts (optional)
 
-You need Node 18 or later. `check-static.mjs` and `bump-version.mjs` need nothing else. The browser scripts (`check-pages`, `check-states`, `make-share-card`) use Playwright, installed in the project you want to check (they look for it in the folder you run them from):
+You need Node 18 or later. `check-static.mjs` and `bump-version.mjs` need nothing else. The browser scripts (`check-pages`, `check-states`, `make-share-card`, `make-favicon`) use Playwright, installed in the project you want to check (they look for it in the folder you run them from):
 ```
 npm install -D playwright
 npx playwright install chromium
@@ -155,6 +156,7 @@ web-launch-checklist/
 │   ├── check-pages.mjs       screenshots + overflow + clipped text + wrapped header + console/network errors
 │   ├── check-states.mjs      contrast on hover, focus and press; missing focus
 │   ├── make-share-card.mjs   link-preview image from an HTML template
+│   ├── make-favicon.mjs      favicon.ico from your SVG icon
 │   └── bump-version.mjs      app version everywhere, or ?v= on every stylesheet and script
 └── assets/
     ├── github-checks.yml     GitHub Actions workflow running the scripts on every push

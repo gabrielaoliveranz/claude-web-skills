@@ -24,9 +24,9 @@ Every item in this skill is a bug that really happened while building two websit
 | A new domain, an API call, moving the app | `references/csp-and-domains.md` |
 | Checkout, subscriptions, webhooks or pricing | `references/payments.md` |
 | Buttons built in JavaScript, or account states | `references/app-code.md` |
-| A static site going live: sitemap, canonical URLs, share images, caching, forms, honest content | `references/static-site-checks.md` |
+| A static site going live: sitemap, canonical URLs, share images, 404 page, Cloudflare quirks, caching, forms, honest content | `references/static-site-checks.md` |
 | Setting up CI, or a check that fails (or passes) for the wrong reason | `references/testing-and-ci.md` |
-| Several languages | `references/multilingual.md` |
+| Several languages, including `hreflang` and canonical URLs for sites that switch with `?lang=` | `references/multilingual.md` |
 | Hiding elements, gradient text, layout shifts | `references/css-traps.md` |
 | Copy, figures, legal pages | `references/content.md` |
 | Finishing any change | `references/before-done.md` |
@@ -39,10 +39,11 @@ Run them from the project folder, giving the script's full path. `check-static.m
 
 | Script | What it catches | Example |
 |---|---|---|
-| `check-static.mjs` | Straight from the files, no browser: paths with the wrong letter case (fine on Windows and Mac, 404 on the server), broken internal links, canonical / `og:url` / `og:image` / sitemap / `robots.txt` that disagree, share images whose real size differs from the declared one, a hand-copied footer that drifted on one page, `mailto:` forms, relative paths on the 404 page, `width: 100vw`, `<style>` in the body, skipped heading levels, published documents no page links to, untracked files | `node <skill>/scripts/check-static.mjs --same footer` |
+| `check-static.mjs` | Straight from the files, no browser: paths with the wrong letter case (fine on Windows and Mac, 404 on the server), broken internal links, canonical / `og:url` / `og:image` / sitemap / `robots.txt` that disagree, share images whose real size differs from the declared one, a hand-copied footer that drifted on one page, `mailto:` forms, relative paths on the 404 page, relative `fetch()` calls in scripts, `hreflang` codes Google rejects (such as `es-419`) or a canonical that drops the other languages, `width: 100vw`, `<style>` in the body, skipped heading levels, published documents no page links to, untracked files | `node <skill>/scripts/check-static.mjs --same footer` |
 | `check-pages.mjs` | In a real browser at 320, 390, 820 and 1440 px, per language and colour scheme: sideways scroll, text cut off at an edge, a header that wraps, script and console errors, failed requests (including ones the CSP blocks), HTTP errors. Saves full-page screenshots | `node <skill>/scripts/check-pages.mjs --base http://localhost:8000 --pages index.html,pricing.html --langs en,pt-PT --schemes light,dark` |
 | `check-states.mjs` | Contrast of every link and button at rest, on hover, on keyboard focus and while pressed, against what is really painted behind the text; elements with no visible focus | `node <skill>/scripts/check-states.mjs --base http://localhost:8000 --pages index.html` |
 | `make-share-card.mjs` | Renders the link-preview image from `assets/share-card.html` (or your own template) at 1200x630 with the site's real fonts | `node <skill>/scripts/make-share-card.mjs --template card.html --out assets/og.png` |
+| `make-favicon.mjs` | Builds the root `favicon.ico` (16, 32 and 48 px) from your SVG icon | `node <skill>/scripts/make-favicon.mjs --svg assets/icon.svg --out favicon.ico` |
 | `bump-version.mjs` | PWA: raises the version in `version.json`, the page and the `sw.js` cache name. Static site: sets a new `?v=` on every local CSS and JS link | `node <skill>/scripts/bump-version.mjs --dir public 1.4.0` or `--dir . --assets 20261114a` |
 
 `check-pages.mjs` also takes `--reduced-motion` (check nothing stays hidden with animations off), `--widths` and `--header`. `check-static.mjs` takes `--ignore` (path prefixes) and `--strict` (warnings fail too). Every script exits with 1 when it finds a problem, so they work in CI as they are.

@@ -17,9 +17,9 @@ const SAME = (arg('same', '') || '').split(',').map(s => s.trim()).filter(Boolea
 const STRICT = process.argv.includes('--strict');
 const VERIFY = /^(google[0-9a-f]+|pinterest-[0-9a-f]+|yandex_[0-9a-f]+|BingSiteAuth)\.(html|xml)$/i;
 
-const out = { FAIL: [], WARN: [] };
-const fail = (where, msg) => out.FAIL.push(`${where}: ${msg}`);
-const warn = (where, msg) => out.WARN.push(`${where}: ${msg}`);
+const out = { FAIL: [], WARN: [] }, said = new Set();
+const say = kind => (where, msg) => { const line = `${where}: ${msg}`; if (!said.has(line)) { said.add(line); out[kind].push(line); } };
+const fail = say('FAIL'), warn = say('WARN');
 
 // ---------- files ----------
 function listFiles() {
@@ -118,6 +118,8 @@ const referenced = new Set();           // every local path any page or styleshe
 const canonicals = new Map();           // page -> canonical URL
 const stylesheets = new Set();
 const redirects = new Set();            // stub pages that only send visitors elsewhere
+const pageUrls = new Set();             // each page's own absolute URL (canonical, og:url or x-default)
+const scripts = new Set(), inline = []; // local JS files and inline scripts, checked for relative fetch()
 const blocks = Object.fromEntries(SAME.map(s => [s, new Map()]));
 
 for (const page of pages) {
@@ -136,9 +138,14 @@ for (const page of pages) {
   if (!meta(html, 'viewport')) fail(page, 'missing <meta name="viewport"> (phones render it as a zoomed-out desktop page)');
 
   const canonical = linkRel(html, 'canonical');
+  const alternates = tags(html, 'link').filter(t => /\balternate\b/i.test(t.a.rel || '') && t.a.hreflang);
+  const xDefault = alternates.find(t => t.a.hreflang.toLowerCase() === 'x-default');
+  const pageUrl = canonical || meta(html, 'og:url') || (xDefault && xDefault.a.href);
+  if (pageUrl && /^https?:\/\//.test(pageUrl)) pageUrls.add(pageUrl);
   if (!noindex && !redirect) {
     if (!meta(html, 'description')) warn(page, 'no meta description (search results and link previews show random text)');
-    if (!canonical) warn(page, 'no <link rel="canonical">');
+    // A multilingual page may set its canonical by script (one per language); hreflang alternates are the signal then.
+    if (!canonical && !xDefault) warn(page, 'no <link rel="canonical">');
     if (!meta(html, 'og:image')) warn(page, 'no og:image (shared links show no picture)');
   }
   if (canonical) {
@@ -152,10 +159,29 @@ for (const page of pages) {
     const ogUrl = meta(html, 'og:url');
     if (ogUrl && ogUrl !== canonical) fail(page, `og:url (${ogUrl}) differs from canonical (${canonical})`);
   }
+  // Languages: codes Google accepts, targets that exist, an x-default, and a canonical that doesn't erase them
+  if (alternates.length) {
+    if (!xDefault) warn(page, 'hreflang alternates without an x-default (the version for everyone else)');
+    const seenH = new Set();
+    for (const t of alternates) {
+      const h = t.a.hreflang, href = t.a.href || '';
+      if (!/^(x-default|[a-z]{2,3}(-[a-z]{4})?(-[a-z]{2})?)$/i.test(h)) fail(page, `hreflang="${h}" is not a code Google accepts (a language, then an optional two-letter country): "es-419" is invalid, use "es" for Latin America`);
+      if (seenH.has(h.toLowerCase())) fail(page, `hreflang="${h}" is listed twice`);
+      seenH.add(h.toLowerCase());
+      if (!/^https?:\/\//.test(href)) { fail(page, `hreflang="${h}" needs an absolute URL, found "${href}"`); continue; }
+      if (!served(dec(new URL(href).pathname)).ok) fail(page, `hreflang="${h}" points at ${href}, which has no page in the site`);
+    }
+    if (canonical && /^https?:\/\//.test(canonical)) {
+      const cu = new URL(canonical), langs = alternates.filter(t => t !== xDefault && /^https?:\/\//.test(t.a.href || '')).map(t => new URL(t.a.href));
+      if (langs.length && !cu.search && langs.every(u => u.pathname === cu.pathname && u.search))
+        warn(page, `all language versions are this one file told apart by a query string (?lang=), but the canonical is the plain URL, so Google treats every other language as a duplicate and drops it. Give each language its own canonical (set by script from ?lang=) and keep the HTML free of a fixed one`);
+    }
+  }
+
   const ogImage = meta(html, 'og:image');
   if (ogImage) {
     if (!/^https?:\/\//.test(ogImage)) fail(page, `og:image must be an absolute URL (social sites ignore "${ogImage}")`);
-    else if (canonical && /^https?:\/\//.test(canonical) && new URL(ogImage).origin === new URL(canonical).origin) {
+    else if (pageUrl && /^https?:\/\//.test(pageUrl) && new URL(ogImage).origin === new URL(pageUrl).origin) {
       const local = served(dec(new URL(ogImage).pathname));
       if (!local.ok) fail(page, `og:image ${ogImage} has no file in the site${local.wrong ? ` (on disk: ${local.wrong}, wrong case)` : ''}`);
       else {
@@ -181,9 +207,11 @@ for (const page of pages) {
     if (r.outside) { fail(page, `"${ref}" points above the site root`); continue; }
     const s = served(r.path + (r.trailing ? '/' : ''));
     if (!s.ok) fail(page, `"${ref}" not found${s.wrong ? ` - on disk it's "${s.wrong}" (wrong case: works on Windows and Mac, 404 on the server)` : ''}`);
-    else { referenced.add(s.file); if (tag === 'link' && /stylesheet/i.test(a.rel || '')) stylesheets.add(s.file); }
+    else { referenced.add(s.file); if (tag === 'link' && /stylesheet/i.test(a.rel || '')) stylesheets.add(s.file); if (tag === 'script') scripts.add(s.file); }
     if (is404 && !ref.startsWith('/') && tag !== 'a') warn(page, `"${ref}" is relative: the 404 page is served at any missing URL, so use a root-absolute path ("/${r.path}")`);
   }
+
+  for (const m of raw.replace(/<!--[\s\S]*?-->/g, '').matchAll(/<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)) inline.push([page, m[1]]);
 
   // Content traps
   for (const t of tags(html, 'img')) if (!('alt' in t.a)) fail(page, `<img src="${t.a.src || '?'}"> has no alt (use alt="" for decoration)`);
@@ -204,7 +232,18 @@ for (const page of pages) {
   }
 }
 
+// Scripts: a relative fetch() resolves from the page's address, not the script's file
+for (const [file, src] of [...[...scripts].map(f => [f, read(f)]), ...inline]) {
+  for (const m of src.replace(/^\s*\/\/.*$/gm, '').matchAll(/\bfetch\(\s*(['"`])([^'"`$]+)/g)) {
+    const u = m[2];
+    if (/^([a-z][a-z0-9+.-]*:|\/|\.\.?\/?$)/i.test(u)) continue;
+    warn(file, `fetch('${u}...') is relative to the page's address: it breaks on the 404 page at a nested URL (/a/b/missing) and on pages in subfolders; use '/${u.replace(/^\.\//, '')}'`);
+  }
+}
+
 // Stylesheets: url() and @import references, plus the 100vw trap
+const vw = [];
+let clipped = false; // html or body with overflow-x: clip/hidden hides the sideways scroll, though not the overlap
 for (const css of stylesheets) {
   const src = read(css).replace(/\/\*[\s\S]*?\*\//g, '');
   for (const m of src.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)|@import\s+["']([^"']+)["']/g)) {
@@ -214,11 +253,15 @@ for (const css of stylesheets) {
     const s = served(r.path);
     if (!s.ok) fail(css, `url(${ref}) not found${s.wrong ? ` - on disk it's "${s.wrong}" (wrong case)` : ''}`); else referenced.add(s.file);
   }
-  if (/(?<![\w-])width\s*:\s*100vw/.test(src)) warn(css, 'width: 100vw includes the scrollbar and causes sideways scroll whenever the page is tall; use the natural block width');
+  if (/(?<![\w-])width\s*:\s*100vw/.test(src)) vw.push(css);
+  if (/(^|[}\s,])(html|body)\s*\{[^}]*overflow(-x)?\s*:\s*(clip|hidden)/i.test(src)) clipped = true;
 }
+for (const css of vw) warn(css, clipped
+  ? 'width: 100vw includes the scrollbar; overflow-x on html/body hides the sideways scroll, but the element still runs under the scrollbar on desktops with classic scrollbars (Windows), so its right edge is covered. Use the natural block width where you can'
+  : 'width: 100vw includes the scrollbar and causes sideways scroll whenever the page is tall; use the natural block width');
 
 // One domain everywhere
-const origins = new Set([...canonicals.values()].filter(u => /^https?:/.test(u)).map(u => new URL(u).origin));
+const origins = new Set([...canonicals.values(), ...pageUrls].filter(u => /^https?:/.test(u)).map(u => new URL(u).origin));
 if (origins.size > 1) fail('canonical URLs', `pages disagree on the domain: ${[...origins].join(', ')}`);
 const origin = [...origins][0];
 
@@ -231,6 +274,11 @@ if (existsSync(join(ROOT, 'sitemap.xml'))) {
     const s = served(dec(new URL(loc).pathname));
     if (!s.ok) fail('sitemap.xml', `${loc} has no page in the site`);
     else { referenced.add(s.file); const h = strip(read(s.file)); if ((meta(h, 'robots') || '').includes('noindex')) warn('sitemap.xml', `${loc} is noindex; remove it from the sitemap`); }
+  }
+  for (const m of read('sitemap.xml').matchAll(/<xhtml:link\b[^>]*>/gi)) {
+    const a = attrs(m[0]), h = a.hreflang || '', href = a.href || '';
+    if (h && !/^(x-default|[a-z]{2,3}(-[a-z]{4})?(-[a-z]{2})?)$/i.test(h)) fail('sitemap.xml', `hreflang="${h}" is not a code Google accepts ("es-419" is invalid, use "es")`);
+    if (/^https?:\/\//.test(href) && !served(dec(new URL(href).pathname)).ok) fail('sitemap.xml', `alternate ${href} has no page in the site`);
   }
   for (const [page, url] of canonicals) {
     const h = strip(read(page));

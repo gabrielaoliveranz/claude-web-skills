@@ -9,6 +9,8 @@ Go through every line that applies to the change. If a line couldn't be checked,
   - add `--schemes light,dark` if the site has a dark theme;
   - run once more with `--reduced-motion` if anything animates, and check that all content still shows.
 - Run `scripts/check-states.mjs` if the change touches links, buttons, colours or the header.
+- Open a missing page at a nested address (`--pages a/b/missing`) once per site: the 404 page must load its styles, scripts and translations there too.
+- Several languages switched by `?lang=`? Load a page in a browser set to US English (as Googlebot renders) and check which language and canonical you get (`references/multilingual.md`).
 - Fix every reported console error, failed request and HTTP error. A blocked request often means the CSP is missing a new domain (`references/csp-and-domains.md`).
 - Open the screenshots and look at them. The scripts miss things a person sees at once (overlaps, odd spacing, wrong colours).
 - Run the project's own CI checks if it has them (`references/testing-and-ci.md`), and read the real exit code, not the end of a pipe.

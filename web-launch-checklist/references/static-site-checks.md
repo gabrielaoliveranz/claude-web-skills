@@ -4,8 +4,8 @@ For the automated checks and the order to run them in, see `testing-and-ci.md`. 
 
 ## Files every site needs
 - `sitemap.xml` with each indexable page's canonical URL and a real `lastmod`; `robots.txt` with a `Sitemap:` line on the same domain.
-- A root `favicon.ico` (search engines ask for it directly, whatever the `<link rel="icon">` says).
-- A `404.html` that uses **root-absolute paths** (`/assets/site.css`). The host serves it at whatever missing URL was asked for, so relative paths break as soon as the missing URL is one folder deep.
+- A root `favicon.ico` (search engines ask for it directly, whatever the `<link rel="icon">` says). Build it from your SVG icon with `scripts/make-favicon.mjs`.
+- A `404.html` that uses **root-absolute paths** (`/assets/site.css`). The host serves it at whatever missing URL was asked for, so relative paths break as soon as the missing URL is one folder deep. **Scripts too:** a 404 page that was a copy of the home page loaded without styles, scripts or translations at `/a/b/missing`, because `fetch('i18n/es.json')` and a config path (`'assets/shots'`) were relative. `check-static.mjs` finds relative `fetch()` calls; test the real thing with `check-pages.mjs --pages a/b/missing`.
 - Verification files (Google Search Console, Pinterest) stay in the repo byte for byte, forever. Deleting one silently un-verifies the site.
 - A `.gitattributes` that fixes line endings.
 
@@ -15,6 +15,11 @@ For the automated checks and the order to run them in, see `testing-and-ci.md`. 
 - **Redirect the old address.** After moving to a custom domain, redirect the `github.io` (or `workers.dev`, `netlify.app`) address, or the same content is indexed twice.
 - **Moving a page:** leave a stub at the old address with `noindex`, full Open Graph tags and a redirect that keeps the `#hash`, so old links, QR codes on printed material and social previews keep working.
 - **Files outside HTML carry their own copies.** A PDF or a social card that prints the domain needs a manual re-export when the domain changes; no HTML check can see inside it.
+
+## Cloudflare static sites (Workers or Pages)
+- **`.html` addresses redirect.** `example.com/guide.html` answers with a 307 to `example.com/guide`, so canonical URLs, the sitemap and `hreflang` links use the address without `.html` (`check-static.mjs` accepts both forms when matching a canonical to its file).
+- **A missing page is served from `404.html` with a 404 status** when the config has `"not_found_handling": "404-page"`; test it at a nested address.
+- **`robots.txt` may exist before you write one.** Cloudflare can serve a managed `robots.txt` (content signals for AI crawlers) that has no `Sitemap:` line. Add your own `robots.txt` with the `Sitemap:` line; Cloudflare puts its block above yours.
 
 ## Caching after a deploy
 - **GitHub Pages caches every file for 10 minutes** (`Cache-Control: max-age=600`). Right after a deploy, returning visitors can get new HTML with an old stylesheet, or old HTML entirely, and the fix looks like it didn't ship.
@@ -26,6 +31,7 @@ For the automated checks and the order to run them in, see `testing-and-ci.md`. 
 - **One card per audience.** A services page that reused the portfolio's card showed recruiter-facing stats to prospective clients.
 - **Declare the real size** (`og:image:width`/`height`) and keep the image an absolute URL; social sites ignore relative ones.
 - **The card is one more copy of your figures.** Regenerate it whenever tokens or numbers change.
+- **A template that links the site's stylesheet inherits its classes too.** A card's `.pill` button rendered at a fraction of its size because the site already styled `.pill`. Give template classes their own prefix (`card-cta`).
 
 ## Search
 - **One title and description per page,** with the words a local customer would type ("bookkeeping dashboards for small businesses in New Zealand"), and headings that name the service.
