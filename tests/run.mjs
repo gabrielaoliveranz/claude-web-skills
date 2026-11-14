@@ -122,6 +122,13 @@ test('check-pages: a clean page reports nothing', async () => {
   try { expect(await run('check-pages.mjs', ['--base', s.base, '--pages', 'good.html', '--widths', '320,1440', '--out', out]), { exit: 0, has: ['No problems found'] }); }
   finally { s.close(); rmSync(out, { recursive: true, force: true }); }
 }, { browser: true });
+test('check-pages: a closed mobile menu is not a wrapped header', async () => {
+  const s = await serve(join(FIX, 'pages')), out = tmp();
+  try {
+    expect(await run('check-pages.mjs', ['--base', s.base, '--pages', 'menu-closed.html', '--out', out]), { exit: 0, has: ['No problems found'] });
+    expect(await run('check-pages.mjs', ['--base', s.base, '--pages', 'header-wraps.html', '--widths', '390', '--out', out]), { exit: 1, has: ['header wraps to more than one line'] });
+  } finally { s.close(); rmSync(out, { recursive: true, force: true }); }
+}, { browser: true });
 test('check-states: hover rule, slow transition, missing focus, gradient skipped', async () => {
   const s = await serve(join(FIX, 'pages'));
   try {

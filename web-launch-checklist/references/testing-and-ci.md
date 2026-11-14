@@ -21,6 +21,8 @@ A check that passes without testing anything is worse than no check: it makes yo
 
 ## Measuring layout honestly
 - **Test a true 320px viewport.** Resizing a desktop browser window often stops at about 500px. Use device emulation (Playwright's `viewport`, or CDP `Emulation.setDeviceMetricsOverride`).
+- **Hidden is not the same as zero size.** The links inside a closed `<details>` mobile menu still report a position and size, so a check counted them as a second header line on every page of a site whose header was fine. Ask the browser whether an element is really rendered (`el.checkVisibility()`), not whether it has a box.
+- **Count lines by overlap, not by position buckets.** A header check that grouped items into 8px bands and wanted three bands missed a header that really wrapped onto two lines. Items share a line when their vertical ranges overlap.
 - **Test the widths where layouts switch.** A two-column layout that starts at 1280px was never tested at 1280px; add each breakpoint you use to the widths you check.
 - **Reveal-on-scroll thresholds fail on tall sections.** An `IntersectionObserver` with `threshold: 0.2` never fired for a section taller than five screens on a phone, because 20% of it can never be visible at once. Use a small threshold (0 to 0.1) or a `rootMargin`, and test on a short phone screen.
 - **Make failures readable from the log alone.** Print axe's `failureSummary` (the measured colours and ratio) and the element, so a CI-only failure can be fixed without reproducing it.

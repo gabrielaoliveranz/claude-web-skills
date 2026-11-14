@@ -77,7 +77,8 @@ for (const page of pages) for (const lang of (langs.length ? langs : [''])) for 
     const seen = new Set(), ids = [];
     for (const el of document.querySelectorAll('a[href], button, [role="button"], input[type="submit"], input[type="button"], summary')) {
       const r = el.getBoundingClientRect(), s = getComputedStyle(el);
-      if (!r.width || !r.height || s.visibility === 'hidden' || el.closest('[aria-hidden="true"], [inert]') || !el.innerText.trim()) continue;
+      const shown = !el.checkVisibility || el.checkVisibility({ opacityProperty: true, visibilityProperty: true, contentVisibilityAuto: true });
+      if (!r.width || !r.height || !shown || s.visibility === 'hidden' || el.closest('[aria-hidden="true"], [inert]') || !el.innerText.trim()) continue;
       const key = [el.tagName, el.className, s.color, s.backgroundColor, s.fontSize, el.parentElement?.className].join('|');
       if (seen.has(key)) continue; seen.add(key);
       el.setAttribute('data-cs', ids.length); ids.push(el.innerText.trim().replace(/\s+/g, ' ').slice(0, 40));

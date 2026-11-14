@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Closed menu</title>
+<style>
+body{margin:0;font:16px sans-serif;color:#14171f;background:#fff}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.desk{display:flex;gap:16px} .mnav{display:none;position:relative}
+.mpanel{position:absolute;right:0;top:56px;display:flex;flex-direction:column;background:#fff;padding:8px}
+.mpanel a{padding:10px 16px}
+@media (max-width:700px){.desk{display:none}.mnav{display:block}}
+</style></head><body>
+<header><a href="/">Logo</a>
+  <nav class="desk"><a href="/a">Services</a><a href="/b">Approach</a><a href="/c">Work</a></nav>
+  <details class="mnav"><summary aria-label="Menu">Menu</summary><div class="mpanel"><a href="/a">Services</a><a href="/b">Approach</a><a href="/c">Work</a><a href="/d">FAQs</a></div></details>
+</header>
+<main><h1>Hello</h1><p>A page whose mobile menu is a closed details element.</p></main>
+</body></html>

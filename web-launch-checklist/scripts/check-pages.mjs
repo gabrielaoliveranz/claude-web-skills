@@ -49,10 +49,13 @@ for (const page of pages) for (const lang of (langs.length ? langs : [''])) for 
   await p.waitForTimeout(400);
   const r = await p.evaluate(({ header }) => {
     const vw = document.documentElement.clientWidth, issues = [];
+    // Rendered for real: excludes the contents of a closed <details> menu and other skipped or transparent subtrees,
+    // which still report a size to getBoundingClientRect.
+    const shown = el => el.checkVisibility ? el.checkVisibility({ opacityProperty: true, visibilityProperty: true, contentVisibilityAuto: true }) : true;
     if (document.documentElement.scrollWidth > vw + 1) issues.push(`horizontal overflow: page is ${document.documentElement.scrollWidth}px wide`);
     const seen = new Set();
     for (const el of document.querySelectorAll('body *')) {
-      const cs = getComputedStyle(el); if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0) continue;
+      const cs = getComputedStyle(el); if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0 || !shown(el)) continue;
       if (!el.textContent.trim() || el.children.length > 3) continue;
       const b = el.getBoundingClientRect(); if (!b.width || !b.height) continue;
       const crosses = (l, r) => (b.left < l - 1 && b.right > l + 1) || (b.right > r + 1 && b.left < r - 1);
@@ -73,7 +76,10 @@ for (const page of pages) for (const lang of (langs.length ? langs : [''])) for 
       if (clipped && !seen.has(t)) { seen.add(t); issues.push(`cut off at the edge: "${t}"`); }
     }
     const h = document.querySelector(header);
-    if (h) { const kids = [...h.querySelectorAll('a, button, img, svg')].filter(k => k.getBoundingClientRect().height); const tops = new Set(kids.map(k => Math.round(k.getBoundingClientRect().top / 8))); if (tops.size > 2) issues.push('header wraps to more than one line'); }
+    if (h) { const kids = [...h.querySelectorAll('a, button, img, svg')].filter(k => k.getBoundingClientRect().height && shown(k)); // Items share a line when their vertical ranges overlap (a tall logo and short links still count as one line).
+      let lines = 0, bottom = -Infinity;
+      for (const r of kids.map(k => k.getBoundingClientRect()).sort((x, y) => x.top - y.top)) { if (r.top >= bottom - 2) { lines++; bottom = r.bottom; } else bottom = Math.max(bottom, r.bottom); }
+      if (lines > 1) issues.push('header wraps to more than one line'); }
     return issues.slice(0, 12);
   }, { header }).catch(e => [`could not inspect the page: ${e.message.split('\n')[0]}`]);
   issues.push(...r);
