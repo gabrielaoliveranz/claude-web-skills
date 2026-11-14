@@ -1,4 +1,4 @@
-# Field notes: technical fixes from three products
+# Field notes: technical fixes from two websites and two apps
 
 Real bugs from a consultancy website, an installable budgeting app and a paid app. Read the whole list once per project; it's quicker than rediscovering them.
 

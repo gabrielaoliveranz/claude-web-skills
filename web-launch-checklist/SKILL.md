@@ -5,7 +5,7 @@ description: "Use when building, changing or launching a small web product (a st
 
 # Web launch checklist
 
-Every item in this skill is a bug that really happened while shipping three products (a consultancy website, a budgeting PWA, and a paid app with its sales site). Use it to plan a change and to check it before saying it's done.
+Every item in this skill is a bug that really happened while building two websites and two apps (a consultancy website, a budgeting PWA, and a paid app with its own sales website). Use it to plan a change and to check it before saying it's done.
 
 ## How to use it
 

@@ -1,4 +1,4 @@
-# Field notes: design fixes from three products
+# Field notes: design fixes from two websites and two apps
 
 Real adjustments made after looking at each page on phones, tablets and laptops. Each line says what was wrong and what fixed it. Skim the whole list before designing; most of these come back on every project.
 

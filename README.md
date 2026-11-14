@@ -39,6 +39,7 @@ It helps you:
 - **Make carousels and cards behave.** Equal-height cards, carousel arrows that never cover the content, gentle autoplay that stops when touched.
 - **Avoid the small things that look broken.** A blurred date under the iPhone status bar, a button that vanishes on a dark modal, a cut-off carousel, a lonely button on its own row, double wedges between angled sections.
 - **Keep motion quick and optional.** Animations with a purpose, fast on phones, and switched off for people who prefer reduced motion.
+- **Design data screens that read at a glance.** Right-aligned numbers, one precision per column, real card elevation, obvious hover states, human tooltips, one colour language, and a contrast audit that includes chart axes and translucent backgrounds.
 - **Hand over with confidence.** A review at four screen sizes, light and dark, and in the longest language, so nothing is cut off and nothing breaks.
 
 The two work on their own or together. When both are installed, the design skill uses the checklist's page checker for its final review.
@@ -121,6 +122,7 @@ web-design-playbook/
 ├── references/
 │   ├── field-notes.md        every design fix made on real devices, read once per project
 │   ├── recipes.md            ready-made code and the exact values that worked
+│   ├── dashboards-and-data.md tables, KPI cards, charts, contrast audits
 │   └── ...                   identity, phone screens, header, patterns, carousels, motion, review
 └── assets/DESIGN-template.md template to define a new product's identity
 docs/                         image for this README
