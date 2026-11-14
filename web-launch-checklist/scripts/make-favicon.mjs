@@ -13,6 +13,9 @@ function loadPlaywright() {
 }
 const { chromium } = loadPlaywright();
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
+// A mistyped option (--scheme for --schemes) would otherwise be ignored and the check would quietly test less.
+const OPTIONS = ["svg","out","sizes"];
+for (const a of process.argv.slice(2)) if (a.startsWith("--") && !OPTIONS.includes(a.slice(2))) { console.error(`Unknown option ${a}. Options: ${OPTIONS.map(o => "--" + o).join(", ")}`); process.exit(2); }
 const svgPath = resolve(arg('svg', 'favicon.svg')), out = resolve(arg('out', 'favicon.ico'));
 const sizes = arg('sizes', '16,32,48').split(',').map(Number).filter(n => n > 0 && n <= 256);
 if (!existsSync(svgPath)) { console.error(`No SVG at ${svgPath}`); process.exit(1); }

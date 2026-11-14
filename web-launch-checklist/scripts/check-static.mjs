@@ -10,6 +10,9 @@ import { execFileSync } from 'node:child_process';
 import { join, posix, extname, resolve } from 'node:path';
 
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
+// A mistyped option (--scheme for --schemes) would otherwise be ignored and the check would quietly test less.
+const OPTIONS = ["root","same","ignore","strict"];
+for (const a of process.argv.slice(2)) if (a.startsWith("--") && !OPTIONS.includes(a.slice(2))) { console.error(`Unknown option ${a}. Options: ${OPTIONS.map(o => "--" + o).join(", ")}`); process.exit(2); }
 const ROOT = resolve(arg('root', '.'));
 // Tool folders are never served as pages (share-card templates, test fixtures).
 const IGNORE = ['scripts/', 'tests/', 'test/', ...(arg('ignore', '') || '').split(',').map(s => s.trim()).filter(Boolean)];
@@ -230,7 +233,7 @@ for (const page of pages) {
     const norm = b.replace(/\s(aria-current|data-active)="[^"]*"/g, '')
       .replace(/\b(href|src)="([^"]*)"/g, (m, k, v) => { if (!v || v.startsWith('#') || external(v)) return m; const r = resolveRef(page, v); return r && r.path !== undefined ? `${k}="/${r.path}${v.match(/[?#].*$/)?.[0] || ''}"` : m; })
       .replace(/\s+/g, ' ').trim();
-    blocks[sel].set(page, norm);
+    blocks[sel].set(page, { norm, lang: (htmlTag && htmlTag.a.lang || '').toLowerCase() });
   }
 }
 
@@ -303,16 +306,21 @@ for (const f of ALL) {
   else if (pages.includes(f) && !/(^|\/)(404|index)\.html$/.test(f)) warn(f, 'page not linked from any other page or the sitemap');
 }
 
-// Shared blocks: compare each page with the most common version
+// Shared blocks: compare each page with the most common version among pages in the same language
+// (a translated footer is meant to differ from the original).
 for (const sel of SAME) {
-  const m = blocks[sel];
-  if (!m.size) { warn(`--same ${sel}`, 'no page has this block'); continue; }
-  const counts = new Map(); for (const v of m.values()) counts.set(v, (counts.get(v) || 0) + 1);
-  const common = [...counts].sort((a, b) => b[1] - a[1])[0][0];
-  for (const [page, v] of m) if (v !== common) {
-    let i = 0; while (i < v.length && v[i] === common[i]) i++;
-    fail(page, `<${sel}> differs from the one on ${[...m].find(([, x]) => x === common)[0]}: ...${v.slice(Math.max(0, i - 30), i + 50)}...`);
+  const all = blocks[sel];
+  if (!all.size) { warn(`--same ${sel}`, 'no page has this block'); continue; }
+  for (const lang of new Set([...all.values()].map(b => b.lang))) {
+    const m = new Map([...all].filter(([, b]) => b.lang === lang).map(([p, b]) => [p, b.norm]));
+    const counts = new Map(); for (const v of m.values()) counts.set(v, (counts.get(v) || 0) + 1);
+    const common = [...counts].sort((a, b) => b[1] - a[1])[0][0];
+    for (const [page, v] of m) if (v !== common) {
+      let i = 0; while (i < v.length && v[i] === common[i]) i++;
+      fail(page, `<${sel}> differs from the one on ${[...m].find(([, x]) => x === common)[0]}${lang ? ` (both lang="${lang}")` : ''}: ...${v.slice(Math.max(0, i - 30), i + 50)}...`);
+    }
   }
+  const m = all;
   const missing = pages.filter(p => !m.has(p) && !redirects.has(p));
   if (missing.length) warn(`--same ${sel}`, `not found on ${missing.join(', ')}`);
 }

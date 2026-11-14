@@ -14,6 +14,9 @@ function loadPlaywright() {
 const { chromium } = loadPlaywright();
 
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
+// A mistyped option (--scheme for --schemes) would otherwise be ignored and the check would quietly test less.
+const OPTIONS = ["base","pages","schemes","width","max","wait","param","langs"];
+for (const a of process.argv.slice(2)) if (a.startsWith("--") && !OPTIONS.includes(a.slice(2))) { console.error(`Unknown option ${a}. Options: ${OPTIONS.map(o => "--" + o).join(", ")}`); process.exit(2); }
 const list = (k, d) => (arg(k, d) || '').split(',').map(s => s.trim()).filter(Boolean);
 const base = arg('base', 'http://localhost:8000').replace(/\/$/, '');
 const pages = list('pages', 'index.html'), schemes = list('schemes', 'light'), langs = list('langs', '');

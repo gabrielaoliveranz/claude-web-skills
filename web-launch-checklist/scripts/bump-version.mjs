@@ -7,6 +7,9 @@ import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from '
 import { join } from 'node:path';
 
 const arg = k => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : undefined; };
+// A mistyped option (--scheme for --schemes) would otherwise be ignored and the check would quietly test less.
+const OPTIONS = ["dir","assets"];
+for (const a of process.argv.slice(2)) if (a.startsWith("--") && !OPTIONS.includes(a.slice(2))) { console.error(`Unknown option ${a}. Options: ${OPTIONS.map(o => "--" + o).join(", ")}`); process.exit(2); }
 const dir = arg('dir') || 'public';
 const touched = [];
 const edit = (file, fn) => { const p = join(dir, file); if (!existsSync(p)) return; const s = readFileSync(p, 'utf8'), n = fn(s); if (n !== s) { writeFileSync(p, n); touched.push(file); } };

@@ -117,7 +117,7 @@ node <path-to>/web-launch-checklist/scripts/check-pages.mjs --base http://localh
 node <path-to>/web-launch-checklist/scripts/check-states.mjs --base http://localhost:8000 --pages index.html,pricing.html
 ```
 
-`check-static.mjs` options: `--root` (the folder the site is served from), `--same` (blocks that must match on every page, such as `footer` or `header.top`), `--ignore` (path prefixes to skip) and `--strict` (warnings fail too).
+`check-static.mjs` options: `--root` (the folder the site is served from), `--same` (blocks that must match on every page in the same language, such as `footer` or `header.top`; translated pages are compared with each other, not with the original), `--ignore` (path prefixes to skip) and `--strict` (warnings fail too).
 
 `check-pages.mjs` options:
 
@@ -139,7 +139,7 @@ Besides layout problems, it reports script and console errors, failed requests (
 
 `check-states.mjs` takes `--base`, `--pages`, `--schemes` and `--langs` like the page checker, plus `--width` (default 1280) and `--max` (distinct elements per page, default 60). Text over an image or gradient is listed as skipped, to check by eye.
 
-Every script exits with code 1 when it finds a problem, so they work in CI as they are.
+Every script exits with code 1 when it finds a problem, so they work in CI as they are, and stops on an option it doesn't recognise, so a typo never turns into a check that quietly tests less.
 
 ## What's inside
 
@@ -177,6 +177,7 @@ web-design-playbook/
 │   ├── dashboards-and-data.md tables, KPI cards, charts, contrast audits
 │   └── ...                   identity, phone screens, header, patterns, cards, motion, review
 └── assets/DESIGN-template.md template to define a new product's identity
+tests/                        fixtures and the test runner for the scripts (npm test)
 docs/                         image for this README
 ```
 
@@ -185,11 +186,14 @@ docs/                         image for this README
 - **Loaded in parts:** each `SKILL.md` is short and has a table that maps the task to the reference files to read. Claude loads only what it needs.
 - **Built from real bugs:** every rule fixed a real problem in production. For example: the Android keyboard covered dialog buttons; a security policy silently blocked the payment check; on iPhone each home-screen icon keeps its own storage.
 - **Checked with screenshots:** `check-pages.mjs` scrolls through each page (so scroll animations run), deliberately ignores carousels and marquees that overflow by design, and reports what's left cut off at an edge.
+- **Tested on every push:** 16 automated tests run each script against fixtures with planted bugs and against clean ones, and were themselves checked by breaking a script on purpose.
 - **Checkers tested before shipping:** each one was run against a fixture with planted bugs (it must catch every one) and against real, published work: two websites and two installable apps (it must not raise false alarms). Running them on the apps found two bugs in the scripts themselves, fixed before release. `check-states.mjs` reads what is actually painted behind the text, so a highlight pill drawn under a tab doesn't produce a false failure.
 
 ## Contributing
 
 Found a bug that a checklist item would have caught? Open an issue or a pull request with the item and a one-line reason.
+
+Changing a script? Run the tests first (`npm install`, then `npm test`; `npm run test:quick` skips the browser ones). Each script runs against fixtures in `tests/fixtures/`: sites with planted bugs it must report, and clean sites it must pass. Add a fixture for the bug your change catches. The same tests run on every push.
 
 ## Licence
 

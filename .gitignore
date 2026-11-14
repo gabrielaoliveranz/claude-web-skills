@@ -2,3 +2,4 @@ node_modules/
 shots/
 capturas/
 CLAUDE.md
+.test-output/

@@ -1,0 +1,23 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright (tests only; the skills need no install)
+        run: |
+          npm ci || npm install
+          npx playwright install --with-deps chromium
+
+      - name: Every script against fixtures with planted bugs and clean fixtures
+        run: npm test

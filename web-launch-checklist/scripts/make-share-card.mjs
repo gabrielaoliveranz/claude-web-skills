@@ -14,6 +14,9 @@ function loadPlaywright() {
 }
 const { chromium } = loadPlaywright();
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
+// A mistyped option (--scheme for --schemes) would otherwise be ignored and the check would quietly test less.
+const OPTIONS = ["template","out","width","height"];
+for (const a of process.argv.slice(2)) if (a.startsWith("--") && !OPTIONS.includes(a.slice(2))) { console.error(`Unknown option ${a}. Options: ${OPTIONS.map(o => "--" + o).join(", ")}`); process.exit(2); }
 const template = resolve(arg('template', 'share-card.html')), out = resolve(arg('out', 'og-card.png'));
 const width = +arg('width', 1200), height = +arg('height', 630);
 if (!existsSync(template)) { console.error(`No template at ${template}`); process.exit(1); }

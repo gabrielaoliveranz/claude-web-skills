@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; connect-src 'self'">
+<style>:root{color-scheme:light dark} body{margin:0;background:#fff} @media (prefers-color-scheme:dark){body{background:#111;color:#eee}} .wide{width:700px;background:#ccc} header{display:flex;gap:8px}</style></head>
+<body><header><a href="#">Home</a><button>Contact</button></header>
+<div class="wide">This box is 700px wide and overflows phones</div>
+<img src="missing.png" alt="x" width="10" height="10">
+<script>fetch('https://api.example.com/data').catch(()=>{}); undefinedFunction();</script>
+<div style="height:3000px"></div>
+<button class="to-top" hidden>Top</button>
+<script>
+(function () {
+  var toTop = document.querySelector('.to-top'); if (!toTop) return;
+  toTop.addEventListener('click', function () { scrollTo({ top: 0 }); });
+  addEventListener('scroll', function () { toTop.hidden = scrollY < innerHeight * 1.2; }, { passive: true });
+})();
+</script></body></html>
