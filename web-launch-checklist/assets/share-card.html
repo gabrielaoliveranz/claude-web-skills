@@ -1,0 +1,36 @@
+<!doctype html>
+<!-- Link-preview card template (1200x630). Render it with scripts/make-share-card.mjs.
+     Link your own stylesheet below so the card uses the site's fonts and colour tokens; never retype hex values here.
+     Every figure on the card is one more copy of a number: list this file wherever you track where figures appear. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Share card</title>
+<!-- <link rel="stylesheet" href="../assets/site.css"> -->
+<style>
+  :root { --bg: #f4f3ee; --ink: #14171f; --muted: #5b6070; --accent: #2747d6; }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body { background: var(--bg); color: var(--ink); font-family: system-ui, sans-serif; display: grid; grid-template-columns: 12px 1fr; }
+  .bar { background: var(--accent); }
+  .card { padding: 72px 80px; display: flex; flex-direction: column; justify-content: space-between; }
+  .eyebrow { font-size: 22px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  h1 { font-size: 68px; line-height: 1.05; letter-spacing: -.02em; margin: 18px 0 0; max-width: 900px; text-wrap: balance; }
+  .foot { display: flex; justify-content: space-between; align-items: flex-end; font-size: 26px; color: var(--muted); }
+  .stats { display: flex; gap: 56px; }
+  .stats b { display: block; font-size: 44px; color: var(--ink); }
+</style>
+</head>
+<body>
+  <div class="bar"></div>
+  <div class="card">
+    <div>
+      <div class="eyebrow">Product name</div>
+      <h1>The page's own headline, as it appears on the page</h1>
+    </div>
+    <div class="foot">
+      <div class="stats"><div><b>3</b>first figure</div><div><b>12</b>second figure</div></div>
+      <div>example.com</div>
+    </div>
+  </div>
+</body>
+</html>
