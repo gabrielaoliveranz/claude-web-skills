@@ -92,3 +92,37 @@ Real adjustments made after looking at each page on phones, tablets and laptops.
 - **Never cut both edges where two cut sections meet;** it leaves a double wedge.
 - **A heading after a cut gets at least 64px of top padding** (80px if the section itself is cut on top).
 - **The area revealed by a cut shows the page background,** so the section between two cut bands must use that same background.
+
+## Personal or consultancy website (from its spec and change log)
+- **Two audiences, two doors.** A page that serves employers and clients sends each to its own action within two clicks. Put two cards under the hero ("Hiring?" / "Running a business?"). Each page has one main audience.
+- **At most two dark sections per page.** Four dark bands made the home page heavy and 8,400px tall. The redesign cut it to about 5,000px.
+- **Project bands become cards** (screenshot, question, three figures, "Read the case study"), side by side on desktop and stacked on phones.
+- **A scroll story spanning three screens became four cards on one screen.**
+- **Unify screenshots from different apps** with the same thin border and a subtle shadow, and keep them still (no hover zoom).
+- **Crop screenshots that show off-palette elements** (a stray orange button in a blue site).
+- **Third-party embeds must take your fonts and colours.** A newsletter form in the provider's own font looked pasted in. Style it, or use your own form connected by API.
+- **Check overlaps at real widths.** At 1272px a large hero name covered the text of a floating card.
+- **A huge moving outline-text ribbon of tools** was replaced by one still line: "SQL · Python · R · Power BI · Excel · Git".
+- **Cut empty space between sections by about a third** when the page feels long.
+- **Watch light-to-dark transitions under a sticky header.** The logo passed through a dark box at the seam.
+- **Hero particles or motion must not compete with the headline** while the page loads.
+- **Try big visual changes on a branch** and compare before merging.
+- **Keep what works.** List what not to touch (the copy that lands, the palette, the signature section) before a redesign starts.
+- **Pricing shown as "From $X"** until prices are final, with the same call to action repeated at the end. Use a labelled example dashboard until the first approved case study exists.
+- **Measure the calls to action** (clicks on "Get in touch" vs "Download CV") to know which audience arrives.
+- **SEO per page:** one title and description, with the words a local customer would search for.
+- **Images as WebP at the right size,** with lazy loading for dashboard screenshots.
+- **Buttons are pills, and calls to action end with an arrow** ("Get in touch →"). Cards with a small radius, no shadow at rest and no gradients suit an editorial look.
+
+## Collecting design references
+- **Keep a table: idea, where it came from, where it goes in your product.** For example: "number cards with a small label and coloured figure / a finance app / Home and Insights". It turns a moodboard into decisions.
+- **Patterns that came out of that table and worked:**
+  - light grey page with white rounded cards and grouped lists;
+  - big bold titles with one accent colour;
+  - pill buttons and centred dialogs;
+  - a dark toast with an action ("Done · Download", "Undo");
+  - a coloured bar on cards by type;
+  - a week grid with coloured blocks and hatched blocked time;
+  - a mini month calendar on desktop;
+  - a day progress bar;
+  - the month-end close as a guided ritual.

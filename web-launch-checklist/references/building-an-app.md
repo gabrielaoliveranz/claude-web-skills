@@ -52,3 +52,29 @@ Almost every serious bug in a small app comes from a variable nobody thought abo
 - **Store-order unlock:** a small server endpoint checks the order number with the store's API and allows a fixed number of devices (for example 3), stored in a key-value store.
 - **Admin endpoint for new codes,** protected by a secret, so you can let someone back in without a release.
 - **The guide the buyer gets (PDF) has the access details on page 1,** and the app's error message points there.
+
+## Privacy variables (apps that hold other people's data)
+| Variable | Risk | What we decided |
+|---|---|---|
+| Screen in view | A client sees other names on your screen | A discreet mode that shows only initials, one tap away |
+| Notifications | A name appears on the lock screen | Notifications never carry names ("2 sessions to mark") |
+| Lost phone | Losing records needed for tax | Recommend encrypted sync at welcome, a backup reminder, and a warning if there's never been one |
+| Backup file | The JSON holds names in plain text | Download the backup encrypted with the person's code |
+| Free-text fields | People write sensitive notes | No free-text fields about clients at all |
+| Exports | A name like `=SUM(A1)` runs as a formula | Write every cell as a string in exports |
+
+## Changing rules mid-way
+- **A change of billing period** (monthly to weekly) applies from the next period; the current one closes as it was.
+- **Price rises:** apply them to selected clients from a date. Keep the old price on everything already done, and list who still pays the old price.
+- **Holidays and time off:** blocking a range cancels those sessions without charge and stops the "not marked" warnings.
+- **Late cancellations:** ask "charge for it?" with Yes selected, instead of a fixed rule that charges what the person would have forgiven.
+
+## Acceptance criteria, screen by screen
+- Write one checklist per screen: Home, the list, the detail, closing a period, insights, export, privacy, languages and sizes.
+- Each criterion is a sentence you can test as written:
+  - "Collected only counts payments marked as paid";
+  - "Un-paying returns exactly the amount that was paid";
+  - "A name like =SUM(A1) exports as text".
+- If one fails, the version doesn't ship.
+- Add a test case per real-life situation (tidy, cancels and pays late, price rise, forgot to mark, weekly billing, charged late cancellation, holidays), with the exact numbers the app must show.
+- Add edge cases: a session at 23:30 on the last day of the month, no rate set, first use, archiving with an open period, the same item marked on two devices.
