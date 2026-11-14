@@ -1,5 +1,5 @@
 // Raise a version everywhere it lives, so phones and installed apps stop using stale files.
-// PWA:          node bump-version.mjs --dir public 1.4.0
+// PWA:          node bump-version.mjs --dir public 1.4.0   (or 4.13)
 //               updates version.json, APP_VERSION in index.html and the cache number in sw.js
 // Static site:  node bump-version.mjs --dir . --assets 20261114a
 //               updates every "?v=" on .css and .js links in every .html file under --dir
@@ -32,8 +32,8 @@ if (assets) {
   process.exit(0);
 }
 
-const version = process.argv.slice(2).find(a => /^\d+\.\d+\.\d+$/.test(a));
-if (!version) { console.error('Give a version like 1.4.0 (PWA), or --assets 20261114a (static site)'); process.exit(1); }
+const version = process.argv.slice(2).find(a => /^\d+(\.\d+){1,2}$/.test(a)); // 4.13 or 1.4.0
+if (!version) { console.error('Give a version like 4.13 or 1.4.0 (PWA), or --assets 20261114a (static site)'); process.exit(1); }
 edit('version.json', s => s.replace(/"version"\s*:\s*"[^"]*"/, `"version": "${version}"`));
 edit('index.html', s => s.replace(/(const\s+APP_VERSION\s*=\s*["'])[^"']*(["'])/, `$1${version}$2`));
 edit('sw.js', s => s.replace(/(const\s+CACHE\s*=\s*["'][^"']*?-v)(\d+)(["'])/, (m, a, n, b) => a + (+n + 1) + b));

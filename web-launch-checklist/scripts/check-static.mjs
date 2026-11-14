@@ -145,7 +145,9 @@ for (const page of pages) {
   if (!noindex && !redirect) {
     if (!meta(html, 'description')) warn(page, 'no meta description (search results and link previews show random text)');
     // A multilingual page may set its canonical by script (one per language); hreflang alternates are the signal then.
-    if (!canonical && !xDefault) warn(page, 'no <link rel="canonical">');
+    // An installable app (manifest, no sitemap) isn't meant for search results: no canonical needed.
+    const isApp = tags(html, 'link').some(t => /\bmanifest\b/i.test(t.a.rel || '')) && !existsSync(join(ROOT, 'sitemap.xml'));
+    if (!canonical && !xDefault && !isApp) warn(page, 'no <link rel="canonical">');
     if (!meta(html, 'og:image')) warn(page, 'no og:image (shared links show no picture)');
   }
   if (canonical) {
@@ -233,7 +235,9 @@ for (const page of pages) {
 }
 
 // Scripts: a relative fetch() resolves from the page's address, not the script's file
-for (const [file, src] of [...[...scripts].map(f => [f, read(f)]), ...inline]) {
+// Only matters when a page can be shown at a deeper address: a 404 page, or pages in subfolders.
+const deep = pages.some(p => p.includes('/') || /^404\.html$/.test(p));
+for (const [file, src] of deep ? [...[...scripts].map(f => [f, read(f)]), ...inline] : []) {
   for (const m of src.replace(/^\s*\/\/.*$/gm, '').matchAll(/\bfetch\(\s*(['"`])([^'"`$]+)/g)) {
     const u = m[2];
     if (/^([a-z][a-z0-9+.-]*:|\/|\.\.?\/?$)/i.test(u)) continue;
