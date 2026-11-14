@@ -23,6 +23,7 @@ It helps you:
 - **Avoid phone-only bugs.** iPhone zooming into forms, the Android keyboard hiding your buttons, pages that won't scroll, layouts that drift sideways.
 - **Get paid without surprises.** Setting up Paddle or a similar merchant of record: the legal pages they require before approving your site, webhooks that "succeed" but don't unlock anything, a customer paying with a different email than the one they signed up with, prices in the wrong currency for a country.
 - **Move to your own domain safely.** Redirecting only when the new address is ready, and never asking users to reinstall the app before they have a backup (on iPhone, a reinstalled app starts with empty data).
+- **Get found, and look right when shared.** A sitemap, canonical URLs and share images that agree with each other, a `favicon.ico`, a 404 page that still works at a nested address, the Cloudflare and GitHub Pages quirks that make a fixed page look unfixed (redirected `.html` addresses, a 10-minute cache), and honest content: no placeholder sections, no figures without a source.
 - **Launch in several languages.** Testing the longest language, keeping the visitor's language from page to page, matching demos to the visitor's country, and making every language findable on Google when one page translates itself with `?lang=` (Google most likely sees such a page in English and drops the other languages otherwise).
 - **Build app features without a server.** Updates that reach installed phones without interrupting someone mid-entry, reminders through calendar files, PDF and Excel reports made on the device, imports from the CSV files Excel really produces, backups people can trust.
 - **Catch problems automatically, and trust the checks.** Six scripts (below), a GitHub Actions template that runs them on every push, and a guide to the ways a check can pass without testing anything: a selector that quietly retargets, a pipe that hides the exit code, a skip that covers too much, an animation caught mid-fade only on the CI runner.
@@ -46,7 +47,8 @@ It helps you:
 - **Give your product its own identity.** Colours, fonts and spacing defined once as tokens (with dark mode), and a `DESIGN.md` template to agree on the look before building.
 - **Keep the first phone screen clear.** Headline, one sentence, at most two buttons. Everything else appears as people scroll.
 - **Use patterns that sell the product.** A hero with a live-looking app screen, a "problem then solution" section, a three-step "how it works", real screenshots, prices shown in the visitor's currency.
-- **Make carousels and cards behave.** Equal-height cards, carousel arrows that never cover the content, gentle autoplay that stops when touched.
+- **Make carousels, cards and screenshots behave.** Equal-height cards, carousel arrows that never cover the content, gentle autoplay that stops when touched, carousels a screen reader can follow, and screenshots beside text that are never cropped to a sliver.
+- **Build a header that holds up.** Sticky without hiding the heading you jump to, on one line in every language, one active item, the same navigation on every page.
 - **Avoid the small things that look broken.** A blurred date under the iPhone status bar, a button that vanishes on a dark modal, a cut-off carousel, a lonely button on its own row, double wedges between angled sections.
 - **Make forms and empty screens feel finished.** A contact form that confirms clearly, sheets the Android keyboard can't cover, empty states that explain what comes next, demo data that shows every feature.
 - **Be usable by everyone.** 44px tap targets, visible keyboard focus, icon-only links that screen readers can name, and contrast that holds on hover and press, not only at rest.
@@ -103,9 +105,10 @@ There's no need to call them by name. Claude loads a skill when the task matches
 - *"Connect Paddle in sandbox mode and check that a payment unlocks the app."*
 - *"Check the site on phone, tablet and desktop before we publish."*
 - *"Redesign the home page: there's too much on the first phone screen."*
-
 - *"Set up checks that run on every push for my static site."*
 - *"Add a contact form and make sure it works on phones."*
+- *"My site switches language with ?lang=. Make every language show up on Google."*
+- *"Make the link preview and favicon for the site."*
 
 You can also run the scripts yourself, from your site's folder:
 ```
@@ -130,6 +133,8 @@ node <path-to>/web-launch-checklist/scripts/check-states.mjs --base http://local
 | `--param` | Query parameter used for the language | `lang` |
 | `--out` | Screenshot folder | `shots` |
 
+`--pages` can carry a query string, which is how to check an app in its demo mode: `--pages "index.html?demo" --langs en,es` opens `index.html?demo&lang=en` and so on.
+
 Besides layout problems, it reports script and console errors, failed requests (including ones a Content Security Policy blocks) and HTTP errors, each once per page.
 
 `check-states.mjs` takes `--base`, `--pages`, `--schemes` and `--langs` like the page checker, plus `--width` (default 1280) and `--max` (distinct elements per page, default 60). Text over an image or gradient is listed as skipped, to check by eye.
@@ -146,7 +151,8 @@ web-launch-checklist/
 │   ├── building-an-app.md    variables to decide before coding, data rules, access codes
 │   ├── connecting-services.md domain, Cloudflare, email, Paddle, GitHub Pages
 │   ├── app-features.md       updates, reminders, PDF/Excel, imports, backups without a server
-│   ├── static-site-checks.md going live: canonical URLs, caching, share images, forms, honest content
+│   ├── static-site-checks.md going live: canonical URLs, 404 page, Cloudflare quirks, caching, share images, forms
+│   ├── multilingual.md       several languages, and making each one findable on Google
 │   ├── testing-and-ci.md     checks that tell the truth, and the order to run them
 │   ├── i18n-architecture.md  translations, currencies, dates, holidays
 │   ├── recipes.md            ready-made code (language links, app moves, checkout, webhooks, emails)
@@ -179,7 +185,7 @@ docs/                         image for this README
 - **Loaded in parts:** each `SKILL.md` is short and has a table that maps the task to the reference files to read. Claude loads only what it needs.
 - **Built from real bugs:** every rule fixed a real problem in production. For example: the Android keyboard covered dialog buttons; a security policy silently blocked the payment check; on iPhone each home-screen icon keeps its own storage.
 - **Checked with screenshots:** `check-pages.mjs` scrolls through each page (so scroll animations run), deliberately ignores carousels and marquees that overflow by design, and reports what's left cut off at an edge.
-- **Checkers tested before shipping:** each one was run against a fixture with planted bugs (it must catch every one) and against real, published sites (it must not raise false alarms). `check-states.mjs` reads what is actually painted behind the text, so a highlight pill drawn under a tab doesn't produce a false failure.
+- **Checkers tested before shipping:** each one was run against a fixture with planted bugs (it must catch every one) and against real, published work: two websites and two installable apps (it must not raise false alarms). Running them on the apps found two bugs in the scripts themselves, fixed before release. `check-states.mjs` reads what is actually painted behind the text, so a highlight pill drawn under a tab doesn't produce a false failure.
 
 ## Contributing
 
