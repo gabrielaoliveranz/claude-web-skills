@@ -1,25 +1,25 @@
-# Skills web para Claude
+# Web skills for Claude
 
-Dos skills para que Claude arme sitios y apps web chicas sin repetir los errores de siempre. Salen de lanzar tres productos reales (un sitio de consultoría, una app de presupuesto instalable y una app paga con su web de venta) a lo largo de unos 250 commits. Cada regla es un error que pasó de verdad.
+Two Claude skills for building small web products without repeating the usual mistakes. They come from shipping three real products (a consultancy website, an installable budgeting app, and a paid app with its sales site) over about 250 commits. Every rule is a bug that actually happened.
 
-[![Capturas que genera check-pages.mjs a 390, 820 y 1440 px](docs/check-pages.png)](docs/check-pages.png)
+[![Screenshots from check-pages.mjs at 390, 820 and 1440 px](docs/check-pages.png)](docs/check-pages.png)
 
-*Capturas de `check-pages.mjs` en celular, tablet y compu. Además de sacarlas, el script avisa si algo se desborda, se corta en el borde o si el header se baja de renglón.*
+*Screenshots taken by `check-pages.mjs` at phone, tablet and desktop widths. The script also flags anything that overflows, gets cut off at an edge, or makes the header wrap.*
 
-## Qué incluye
+## What's included
 
-| Skill | Para qué sirve |
+| Skill | What it covers |
 |---|---|
-| [`web-launch-checklist`](web-launch-checklist/SKILL.md) | La parte técnica: versiones de apps instalables (PWA), problemas de iPhone y Android, seguridad (CSP), mudanza de dominio, pagos con Paddle y similares, chequeos automáticos, sitios en varios idiomas y trampas de CSS. Incluye dos scripts. |
-| [`web-design-playbook`](web-design-playbook/SKILL.md) | El diseño: identidad con tokens, qué mostrar en cada pantalla del celular, header y navegación, ideas para el hero y las secciones, tarjetas y carruseles, animaciones, accesibilidad y la revisión antes de entregar. Incluye una plantilla de `DESIGN.md`. |
+| [`web-launch-checklist`](web-launch-checklist/SKILL.md) | The technical side: installable app (PWA) releases, iPhone and Android quirks, Content Security Policy, domain moves, payments with Paddle and similar providers, automated checks, multilingual sites and CSS traps. Ships with two scripts. |
+| [`web-design-playbook`](web-design-playbook/SKILL.md) | The design side: identity tokens, what to show per phone screen, header and navigation, hero and section patterns, cards and carousels, motion, accessibility, and a review before handing over. Ships with a `DESIGN.md` template. |
 
-Funcionan solas o juntas. Si están las dos, la de diseño usa el script de chequeo de la otra.
+They work on their own or together. When both are installed, the design skill uses the checklist's page checker.
 
-## Instalación
+## Installation
 
 ### Claude Code
 
-macOS o Linux:
+macOS or Linux:
 ```
 git clone https://github.com/gabrielaoliveranz/claude-web-skills.git
 cp -r claude-web-skills/web-launch-checklist claude-web-skills/web-design-playbook ~/.claude/skills/
@@ -31,95 +31,76 @@ git clone https://github.com/gabrielaoliveranz/claude-web-skills.git
 Copy-Item -Recurse claude-web-skills\web-launch-checklist, claude-web-skills\web-design-playbook $HOME\.claude\skills\
 ```
 
-Para un solo proyecto, copialas en `.claude/skills/` dentro del proyecto.
+To use them in one project only, copy them into that project's `.claude/skills/` folder instead.
 
-### claude.ai y la app de escritorio
+### claude.ai and the desktop app
 
-1. Tocá **Code › Download ZIP** en esta página y descomprimí.
-2. Comprimí cada carpeta de skill por separado (`web-launch-checklist.zip` y `web-design-playbook.zip`).
-3. En **Settings › Capabilities**, activá la ejecución de código y subí cada ZIP en **Skills**.
+1. Click **Code › Download ZIP** on this page and unzip it.
+2. Zip each skill folder on its own (`web-launch-checklist.zip`, `web-design-playbook.zip`).
+3. In **Settings › Capabilities**, turn on code execution, then upload each ZIP under **Skills**.
 
-### Para los scripts (opcional)
+### For the scripts (optional)
 
-Necesitás Node 18 o más y Playwright:
+You need Node 18 or later and Playwright:
 ```
 npm install playwright
 npx playwright install chromium
 ```
 
-Las skills funcionan igual sin los scripts. En ese caso Claude revisa con capturas propias o te pide que mires en el celular.
+The skills still work without the scripts. Claude then checks with its own screenshots, or asks you to look on your phone.
 
-## Cómo se usa
+## How to use them
 
-No hace falta llamarlas: Claude las carga solo cuando la tarea coincide. Ejemplos:
+There's no need to call them by name. Claude loads a skill when the task matches. For example:
 
-- *"Armame una landing para mi app de turnos, en español e inglés, con precios por país."*
-- *"Subí la versión de la app y fijate que el celular se actualice."*
-- *"Conectá Paddle en modo prueba y verificá que el pago desbloquee la app."*
-- *"Revisá la web en celular, tablet y compu antes de publicar."*
-- *"Rediseñá la portada: en el celular hay demasiadas cosas en la primera pantalla."*
+- *"Build a landing page for my booking app in English and Spanish, with prices by country."*
+- *"Release a new version of the app and make sure installed phones update."*
+- *"Connect Paddle in sandbox mode and check that a payment unlocks the app."*
+- *"Check the site on phone, tablet and desktop before we publish."*
+- *"Redesign the home page: there's too much on the first phone screen."*
 
-El script de chequeo también se puede correr a mano:
+You can also run the page checker yourself:
 ```
-node web-launch-checklist/scripts/check-pages.mjs --base http://localhost:8000 --pages index.html,precios.html --langs es,pt-PT --out capturas
+node web-launch-checklist/scripts/check-pages.mjs --base http://localhost:8000 --pages index.html,pricing.html --langs en,pt-PT --out shots
 ```
 
-| Opción | Qué hace | Por defecto |
+| Option | What it does | Default |
 |---|---|---|
-| `--base` | Dirección del sitio (un servidor local) | `http://localhost:8000` |
-| `--pages` | Páginas a revisar, separadas por coma | `index.html` |
-| `--langs` | Idiomas a probar (se agregan como `?lang=`) | ninguno |
-| `--widths` | Anchos en píxeles | `320,390,820,1440` |
-| `--header` | Selector del header | `header, .nav` |
-| `--out` | Carpeta de capturas | `shots` |
+| `--base` | Site address (a local server) | `http://localhost:8000` |
+| `--pages` | Pages to check, comma-separated | `index.html` |
+| `--langs` | Languages to test (added as `?lang=`) | none |
+| `--widths` | Widths in pixels | `320,390,820,1440` |
+| `--header` | Header selector | `header, .nav` |
+| `--out` | Screenshot folder | `shots` |
 
-## Qué hay adentro
+## What's inside
 
 ```
 web-launch-checklist/
-├── SKILL.md                  qué leer según la tarea
-├── references/               una regla por tema (PWA, celulares, dominios, pagos, idiomas, CSS...)
+├── SKILL.md                  what to read for each kind of task
+├── references/               one file per topic (PWA, phones, domains, payments, languages, CSS...)
 └── scripts/
-    ├── check-pages.mjs       capturas + desbordes + cortes + header en varios renglones
-    └── bump-version.mjs      sube la versión de una PWA en todos los lugares a la vez
+    ├── check-pages.mjs       screenshots + overflow + clipped elements + wrapped header
+    └── bump-version.mjs      raises a PWA's version everywhere at once
 web-design-playbook/
-├── SKILL.md                  qué leer según la tarea
-├── references/               identidad, pantalla del celular, header, patrones, carruseles, animación, revisión
-└── assets/DESIGN-template.md plantilla para definir la identidad de un producto nuevo
-docs/                         imagen de este README
+├── SKILL.md                  what to read for each kind of task
+├── references/               identity, phone screens, header, patterns, carousels, motion, review
+└── assets/DESIGN-template.md template to define a new product's identity
+docs/                         image for this README
 ```
 
-## Cómo funciona por dentro
+## How it works
 
-- **Carga por partes:** cada `SKILL.md` es corto y tiene una tabla que dice qué archivo de `references/` leer según la tarea. Claude no carga todo de golpe, solo lo que necesita.
-- **Basado en errores reales:** cada regla es un problema que se resolvió en producción. Por ejemplo, que el teclado de Android tapaba los botones, que una regla de seguridad bloqueaba en silencio la consulta del pago, o que en el iPhone cada ícono de la pantalla de inicio tiene su propio almacenamiento.
-- **Chequeo con capturas:** `check-pages.mjs` recorre cada página (con scroll, para activar las animaciones), ignora a propósito los carruseles y marquesinas que se desbordan por diseño, y avisa lo que queda cortado en un borde.
+- **Loaded in parts:** each `SKILL.md` is short and has a table that maps the task to the reference files to read. Claude loads only what it needs.
+- **Built from real bugs:** every rule fixed a real problem in production. For example: the Android keyboard covered dialog buttons; a security policy silently blocked the payment check; on iPhone each home-screen icon keeps its own storage.
+- **Checked with screenshots:** `check-pages.mjs` scrolls through each page (so scroll animations run), deliberately ignores carousels and marquees that overflow by design, and reports what's left cut off at an edge.
 
-## Créditos
+## Contributing
 
-Hecho por [Gabriela Olivera](https://gabrielaolivera.nz) junto a Claude. El formato del repo está inspirado en [explainer-skill](https://github.com/alandaitch/explainer-skill).
+Found a bug that a checklist item would have caught? Open an issue or a pull request with the item and a one-line reason.
 
-## Licencia
+## Licence
 
-MIT. Ver [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
 
----
-
-## English
-
-Two Claude skills for building small web products without repeating common mistakes, drawn from shipping three real products over about 250 commits.
-
-- **`web-launch-checklist`:** PWA releases, iPhone and Android quirks, CSP, domain moves, payments with a merchant of record (Paddle and similar), automated checks for static sites, multilingual sites and CSS traps. It ships `check-pages.mjs`, which screenshots every page at 320/390/820/1440 px and flags overflow, clipped elements and wrapped headers, and `bump-version.mjs`.
-- **`web-design-playbook`:** identity tokens, what to show per phone screen, header and navigation, hero and section patterns, cards and carousels, motion, accessibility and a pre-handover review. It ships a `DESIGN.md` template.
-
-**Install in Claude Code:**
-```
-git clone https://github.com/gabrielaoliveranz/claude-web-skills.git
-cp -r claude-web-skills/web-launch-checklist claude-web-skills/web-design-playbook ~/.claude/skills/
-```
-
-**claude.ai:** download the ZIP, zip each skill folder on its own, turn on code execution in Settings › Capabilities, and upload each one under Skills.
-
-**Scripts (optional):** Node 18+ and `npm install playwright && npx playwright install chromium`.
-
-Licence: MIT.
+Made by [Gabriela Olivera](https://gabrielaolivera.nz).
