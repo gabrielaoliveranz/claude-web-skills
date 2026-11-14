@@ -1,0 +1,11 @@
+# Patterns that work
+- Hero:
+  - a headline with a slow colour sweep across its words;
+  - a phone or data visual with a few floating labels showing real data, kept inside the screen;
+  - on phones the visual turns gently sideways on scroll, never stays tilted back.
+- Problem to solution: cards whose problem headline gets struck through with an accent line, revealing the solution card underneath. On desktop the cards go one after another; on phones each one goes as soon as it's visible.
+- "How it works" in three steps: number, short title, one sentence and a small illustration of that step.
+- A colourful marquee of audiences or tools, with the loop duplicated by script, never by hand.
+- A background or wall made of real product screenshots.
+- One big number (countries, clients, hours saved) in gradient text with floating chips around it. On phones, move the glow to the bottom and spread the chips across the full width.
+- Bento grids for privacy or features; an arc carousel on portrait tablets; data pipelines whose connectors are drawn from the real positions of the nodes.
