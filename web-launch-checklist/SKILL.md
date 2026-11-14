@@ -1,6 +1,6 @@
 ---
 name: web-launch-checklist
-description: Use when building, changing or launching a small web product (a static marketing site, a single-file PWA, or a paid microapp with a merchant of record such as Paddle): technical checks that catch the bugs that usually slip through, plus a script that screenshots and inspects every page at phone, tablet and desktop widths.
+description: "Use when building, changing or launching a small web product (a static marketing site, a single-file PWA, or a paid microapp with a merchant of record such as Paddle): technical checks that catch the bugs that usually slip through, plus a script that screenshots and inspects every page at phone, tablet and desktop widths."
 ---
 
 # Web launch checklist

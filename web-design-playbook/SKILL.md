@@ -1,6 +1,6 @@
 ---
 name: web-design-playbook
-description: Use when designing or restyling a landing page, sales site or app screen for a small product: identity tokens, what to show per phone screen, header, hero and section patterns, carousels, motion and the review to run before handing a design over.
+description: "Use when designing or restyling a landing page, sales site or app screen for a small product: identity tokens, what to show per phone screen, header, hero and section patterns, carousels, motion and the review to run before handing a design over."
 ---
 
 # Web design playbook
