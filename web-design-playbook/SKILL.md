@@ -27,7 +27,7 @@ These patterns were refined across a consultancy site, a budgeting app and a Saa
 | Ready-made code and the exact values that worked (timings, breakpoints, positions) | `references/recipes.md` |
 | Every design fix we made on real devices (header, cards, footer, widths, themes, copy) | `references/field-notes.md` |
 
-4. Before handing over, run the review in `references/review.md`. If the `web-launch-checklist` skill is installed, also run its `check-pages.mjs`.
+4. Before handing over, run the review in `references/review.md`. If the `web-launch-checklist` skill is installed, also run its `scripts/check-pages.mjs` (it sits in the same skills folder as this one, for example `~/.claude/skills/web-launch-checklist/`), with `--schemes light,dark` when the product has a dark theme.
 
 ## The three rules people notice most
 

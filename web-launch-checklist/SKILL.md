@@ -33,10 +33,11 @@ Every item in this skill is a bug that really happened while building two websit
 
 ## Scripts
 
-- `scripts/check-pages.mjs`: opens each page at 320, 390, 820 and 1440 px (and in each language you pass), then reports horizontal overflow, elements cut off at the screen edges, and headers that wrap to a second line. It also saves screenshots to look at. Needs Node and Playwright.
+- `scripts/check-pages.mjs`: opens each page at 320, 390, 820 and 1440 px (and in each language and colour scheme you pass), then reports horizontal overflow, elements cut off at the screen edges, headers that wrap to a second line, script and console errors, failed requests (including ones the CSP blocks) and HTTP errors. It also saves screenshots to look at. Run it from the project folder, giving the script's full path; it uses the project's Playwright (`npm install -D playwright`, then `npx playwright install chromium`).
   ```
-  node scripts/check-pages.mjs --base http://localhost:8000 --pages index.html,pricing.html --langs en,pt-PT --out shots
+  node <this skill's folder>/scripts/check-pages.mjs --base http://localhost:8000 --pages index.html,pricing.html --langs en,pt-PT --schemes light,dark --out shots
   ```
+  Add `--reduced-motion` to check that nothing stays hidden when animations are off.
 - `scripts/bump-version.mjs`: raises the version in every place a PWA keeps it (a `version.json`, a version constant in the page, the cache name in `sw.js`) so installed apps update.
   ```
   node scripts/bump-version.mjs --dir public 1.4.0

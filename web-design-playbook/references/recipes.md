@@ -62,11 +62,15 @@ Add the class `in` with an IntersectionObserver when the card is visible.
 ## Back-to-top
 
 ```js
-var top = document.querySelector('.to-top');
-top.addEventListener('click', function () { scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
-addEventListener('scroll', function () { top.hidden = scrollY < innerHeight * 1.2; }, { passive: true });
+(function () {
+  var toTop = document.querySelector('.to-top'); if (!toTop) return;
+  toTop.addEventListener('click', function () { scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
+  addEventListener('scroll', function () { toTop.hidden = scrollY < innerHeight * 1.2; }, { passive: true });
+})();
 ```
 Start the button with the `hidden` attribute, and make sure the CSS has `[hidden] { display: none !important; }`.
+
+Never name the variable `top` (or `name`, `status`, `parent`, `self`) in a plain script: those are read-only browser globals. `var top = …` silently keeps `window.top`, so the click listener lands on the whole window and every click on the page scrolls to the top.
 
 ## Hero phone: pointer on desktop, sideways on phones
 

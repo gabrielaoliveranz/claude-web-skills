@@ -1,23 +1,48 @@
-// Inspect pages at several widths and languages: overflow, clipped elements, wrapped header. Saves screenshots.
-// Usage: node check-pages.mjs --base http://localhost:8000 --pages index.html,about.html --langs en,es --out shots [--header .nav] [--param lang]
-import { chromium } from 'playwright';
+// Inspect pages at several widths, languages and colour schemes: overflow, clipped elements, wrapped header,
+// console errors, failed requests (including CSP blocks). Saves screenshots.
+// Usage: node check-pages.mjs --base http://localhost:8000 --pages index.html,about.html --langs en,es --out shots
+//        [--schemes light,dark] [--reduced-motion] [--header .nav] [--param lang] [--widths 320,390,820,1440]
 import { mkdirSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { join } from 'node:path';
+
+// Find Playwright in the folder you run this from (your project) first, then next to this script.
+// A plain `import 'playwright'` only looks next to the script, which fails when the script lives in ~/.claude/skills.
+function loadPlaywright() {
+  for (const from of [join(process.cwd(), 'noop.js'), import.meta.url]) {
+    try { return createRequire(from)('playwright'); } catch {}
+  }
+  console.error('Playwright not found. In the folder you run this from:\n  npm install -D playwright\n  npx playwright install chromium');
+  process.exit(2);
+}
+const { chromium } = loadPlaywright();
 
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
+const list = (k, d) => (arg(k, d) || '').split(',').map(s => s.trim()).filter(Boolean);
 const base = arg('base', 'http://localhost:8000').replace(/\/$/, '');
-const pages = arg('pages', 'index.html').split(',');
-const langs = (arg('langs', '') || '').split(',').filter(Boolean);
+const pages = list('pages', 'index.html');
+const langs = list('langs', '');
+const schemes = list('schemes', 'light');
+const reducedMotion = process.argv.includes('--reduced-motion') ? 'reduce' : 'no-preference';
 const out = arg('out', 'shots'), header = arg('header', 'header, .nav'), param = arg('param', 'lang');
-const widths = (arg('widths', '320,390,820,1440')).split(',').map(Number);
+const widths = list('widths', '320,390,820,1440').map(Number);
 mkdirSync(out, { recursive: true });
 
 const browser = await chromium.launch();
+const reported = new Set(); // console and network messages repeat at every width: report each once
 let problems = 0;
-for (const page of pages) for (const lang of (langs.length ? langs : [''])) for (const w of widths) {
-  const p = await browser.newPage({ viewport: { width: w, height: w < 900 ? 844 : 900 } });
+for (const page of pages) for (const lang of (langs.length ? langs : [''])) for (const scheme of schemes) for (const w of widths) {
+  const p = await browser.newPage({ viewport: { width: w, height: w < 900 ? 844 : 900 }, colorScheme: scheme, reducedMotion });
   const url = base + '/' + page + (lang ? (page.includes('?') ? '&' : '?') + param + '=' + lang : '');
-  await p.goto(url, { waitUntil: 'networkidle' });
-  await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 600) { scrollTo(0, y); await new Promise(r => setTimeout(r, 60)); } scrollTo(0, 0); });
+  const issues = [], once = msg => { if (!reported.has(msg)) { reported.add(msg); issues.push(msg); } };
+  p.on('pageerror', e => once(`script error: ${e.message.split('\n')[0]}`));
+  p.on('console', m => { if (m.type() === 'error') once(`console error: ${m.text().slice(0, 200)}`); });
+  p.on('requestfailed', r => { if (!/ERR_ABORTED/.test(r.failure()?.errorText || '')) once(`request failed: ${r.url().slice(0, 120)} (${r.failure()?.errorText})`); });
+  p.on('response', r => { if (r.status() >= 400) once(`HTTP ${r.status()}: ${r.url().slice(0, 120)}`); });
+
+  try { await p.goto(url, { waitUntil: 'networkidle', timeout: 30000 }); }
+  catch (e) { issues.push(`page did not finish loading: ${e.message.split('\n')[0]}`); }
+  await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 600) { scrollTo(0, y); await new Promise(r => setTimeout(r, 60)); } scrollTo(0, 0); }).catch(() => {});
   await p.waitForTimeout(400);
   const r = await p.evaluate(({ header }) => {
     const vw = document.documentElement.clientWidth, issues = [];
@@ -47,10 +72,11 @@ for (const page of pages) for (const lang of (langs.length ? langs : [''])) for 
     const h = document.querySelector(header);
     if (h) { const kids = [...h.querySelectorAll('a, button, img, svg')].filter(k => k.getBoundingClientRect().height); const tops = new Set(kids.map(k => Math.round(k.getBoundingClientRect().top / 8))); if (tops.size > 2) issues.push('header wraps to more than one line'); }
     return issues.slice(0, 12);
-  }, { header });
-  const name = `${page.replace(/[^a-z0-9]+/gi, '-')}${lang ? '-' + lang : ''}-${w}`;
-  await p.screenshot({ path: `${out}/${name}.png`, fullPage: true });
-  if (r.length) { problems += r.length; console.log(`\n${name}`); r.forEach(x => console.log('  - ' + x)); }
+  }, { header }).catch(e => [`could not inspect the page: ${e.message.split('\n')[0]}`]);
+  issues.push(...r);
+  const name = `${page.replace(/[^a-z0-9]+/gi, '-')}${lang ? '-' + lang : ''}${scheme !== 'light' ? '-' + scheme : ''}-${w}`;
+  await p.screenshot({ path: `${out}/${name}.png`, fullPage: true }).catch(() => {});
+  if (issues.length) { problems += issues.length; console.log(`\n${name}`); issues.forEach(x => console.log('  - ' + x)); }
   await p.close();
 }
 await browser.close();

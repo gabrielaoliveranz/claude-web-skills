@@ -70,9 +70,9 @@ To use them in one project only, copy them into that project's `.claude/skills/`
 
 ### For the scripts (optional)
 
-You need Node 18 or later and Playwright:
+You need Node 18 or later and Playwright, installed in the project you want to check (the script looks for it in the folder you run it from):
 ```
-npm install playwright
+npm install -D playwright
 npx playwright install chromium
 ```
 
@@ -99,8 +99,13 @@ node web-launch-checklist/scripts/check-pages.mjs --base http://localhost:8000 -
 | `--pages` | Pages to check, comma-separated | `index.html` |
 | `--langs` | Languages to test (added as `?lang=`) | none |
 | `--widths` | Widths in pixels | `320,390,820,1440` |
+| `--schemes` | Colour schemes to test (`light`, `dark`) | `light` |
+| `--reduced-motion` | Run with animations turned off, to catch content that never appears | off |
 | `--header` | Header selector | `header, .nav` |
+| `--param` | Query parameter used for the language | `lang` |
 | `--out` | Screenshot folder | `shots` |
+
+Besides layout problems, it reports script and console errors, failed requests (including ones a Content Security Policy blocks) and HTTP errors, each once per page.
 
 ## What's inside
 
@@ -115,7 +120,7 @@ web-launch-checklist/
 │   ├── recipes.md            ready-made code (language links, app moves, checkout, webhooks, emails)
 │   └── ...                   PWA, phones, CSP, payments, static-site checks, CSS traps, content
 └── scripts/
-    ├── check-pages.mjs       screenshots + overflow + clipped elements + wrapped header
+    ├── check-pages.mjs       screenshots + overflow + clipped elements + wrapped header + console/network errors
     └── bump-version.mjs      raises a PWA's version everywhere at once
 web-design-playbook/
 ├── SKILL.md                  what to read for each kind of task
