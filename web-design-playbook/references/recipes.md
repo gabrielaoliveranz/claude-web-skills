@@ -147,3 +147,20 @@ Duplicate the items with JavaScript (`track.append(...items.map(n => n.cloneNode
 ## Compact contact modal
 
 One dialog with three fields (name, email, message), a send button in the accent colour (a dark "ink" button disappeared on the dark modal), and a "Message sent" state. No email addresses printed around the page. Open it from a floating button and from "Contact" links.
+
+## App header that never looks blurred on iPhone
+
+```css
+.app-header { padding: max(42px, calc(env(safe-area-inset-top) + 16px)) 0 8px; }
+.app-date { color: var(--ink); font-weight: 600; font-size: 15px; letter-spacing: .005em; margin-bottom: 2px; }
+/* no opacity, filter, backdrop-filter, entrance animation or gradient layer on the date */
+```
+Requires `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">`.
+
+## Carousel track that doesn't get cut off
+
+```css
+.carousel-wrap { display: grid; grid-template-columns: minmax(0, 1fr); }
+.carousel-track { width: 100%; display: grid; grid-auto-flow: column; grid-auto-columns: 86%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; }
+.carousel-track > * { scroll-snap-align: center; }
+```

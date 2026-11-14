@@ -64,3 +64,31 @@ Real adjustments made after looking at each page on phones, tablets and laptops.
 - **Say in words what a visual shows.** "Holds $40 for groceries" next to the ring.
 - **Clear page eyebrows** (small labels above titles) help people know where they are.
 - **Demo data that shows every feature.** Include repeated purchases, past periods and paid items so every screen has something to show.
+
+## App screens
+- **The date above the greeting looked blurred on iPhone.** It sat under the status bar. Moving the header down fixed it (see the recipe). Light grey, thin, small text near the top also reads as blurred: use the main ink colour, weight 600, 15px.
+- **Welcome and unlock screens fill the screen and stay still.** An animated cover looked broken on slow phones.
+- **Every colour has one job.** A brand colour for the main action and celebrations (never as text on white), ink for text and hero cards, soft tints for highlights, and status colours (good, heads-up, over) used only to say how you're doing, never as decoration. Each tool or section can have its own soft tint.
+- **Sticker-style illustrations** (thick dark outline, solid offset shadow) and line icons on a coloured chip give personality without stock imagery. No emojis.
+- **Rounded cards (18 to 28px)** and plenty of air.
+- **Session or item rows align in columns** (date with day, time with status chip). Ragged rows look careless.
+- **Version number at the bottom of settings,** so support questions start with "which version?".
+- **Bottom tab bar with five tabs at most** on phones; forms open as sheets.
+- **Settings as a grouped list** (profile card, then rows that open sheets) rather than one long form.
+- **Exports carry the brand:** spreadsheet sheets with a branded header, KPI cards and coloured status; PDFs with the logo. Store spreadsheet text as inline strings so nothing turns into a formula.
+
+## Sales site and marketing pages
+- **The contact button inside a dark modal disappeared.** A dark "ink" button on a dark surface; use the accent button there.
+- **A privacy carousel was cut off on phones** because the track was wider than its wrapper. Use `grid-template-columns: minmax(0, 1fr)` on the wrapper and `width: 100%` on the track.
+- **Floating chips overlapped.** Place each one on a loose grid, and on phones spread them across the full width.
+- **Features as buttons:** centred, and split evenly on tablet (4 + 3), never a lonely last button.
+- **Show the price for the visitor's country** automatically. A visible region picker looked unfinished.
+- **Footer pages open at the top,** not at the scroll position of the previous page.
+- **The demo needs a way back** to the website, and a "try it free" button.
+- **Lists on the page must match the product:** countries, languages, features.
+
+## Section shapes
+- **One section transition style per site** (for example a single diagonal cut), not a mix.
+- **Never cut both edges where two cut sections meet;** it leaves a double wedge.
+- **A heading after a cut gets at least 64px of top padding** (80px if the section itself is cut on top).
+- **The area revealed by a cut shows the page background,** so the section between two cut bands must use that same background.

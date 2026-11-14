@@ -9,12 +9,15 @@ Every item in this skill is a bug that really happened while shipping three prod
 
 ## How to use it
 
-1. Read `references/field-notes.md` once per project. Then find the parts of the task in the table below and read those reference files.
+1. Read `references/field-notes.md` once per project, and `references/building-an-app.md` before starting a new app. Then find the parts of the task in the table below and read those reference files.
 2. While building, follow the rules in those files.
 3. Before saying "done", run `scripts/check-pages.mjs` against the site, look at the screenshots, and go through `references/before-done.md`.
 
 | If the task touches... | Read |
 |---|---|
+| Starting a new app, its data or its logic | `references/building-an-app.md` |
+| Domain, DNS, Cloudflare, email, Paddle, GitHub Pages, forms | `references/connecting-services.md` |
+| Translations, currencies, dates, holidays | `references/i18n-architecture.md` |
 | An installable app, service worker or app version | `references/pwa-releases.md` |
 | Forms, sheets, scrolling or anything on phones | `references/phones.md` |
 | A new domain, an API call, moving the app, DNS or email | `references/csp-and-domains.md` |

@@ -14,3 +14,18 @@ Also:
 - A `.gitattributes` that fixes line endings.
 - Self-hosted fonts, so the privacy policy can honestly say no third-party requests.
 - A contact form that goes through a form service or your own worker, with a clear "Message sent" state and a short privacy note.
+
+## More lessons from a 155-commit site
+- **`width: 100vw` includes the scrollbar** and causes horizontal overflow whenever a vertical scrollbar is present. Use natural block width for full-bleed sections.
+- **A global `a:hover` rule can beat a button's colour** by specificity and make its label vanish on hover. Automated accessibility checks only test the resting state, so measure hover, focus-visible and active too (by real mouse and keyboard in a browser). When pressing a real link to test `:active`, block the navigation with a capturing click listener.
+- **Every skip in a checker needs a stated reason and the narrowest pattern.** Skipping a whole domain also skipped your own case-study link on it.
+- **LICENSE must match reality in both directions:** every third-party asset in use is listed, and nothing listed is gone.
+- **Tool scaffolding never ships.** Design tools and AI sessions leave preview files; ignore them and run a check that fails on untracked, unignored files.
+- **The first CI run for a new page fails** while the link checker follows its own canonical URL before the host has deployed it. Re-run after deployment rather than adding a skip.
+- **Every copy of a number is a liability.** If a figure appears on the page, in the CV, in the social card and in the README, list every copy and update them together, from one source.
+- **The social card carries its own copy of colours and numbers.** Regenerate it whenever tokens or figures change.
+- **Animated text and accessibility:** text whose opacity changes with scroll gets flagged for contrast mid-animation. Mark the animated layer `aria-hidden` in the markup and keep an always-rendered static version (moved to `.sr-only`, not `display: none`) as the real content.
+- **Testing animations:** repeated screenshots or script polling in a tight loop starve `requestAnimationFrame` and make working animations look broken. Take one screenshot after a plain wait, or record state in the page and read it once at the end. Time animations with `performance.now()`, not chained `setTimeout`s.
+- **Physics libraries (Matter.js):** give letters the same negative collision group so they don't push each other, and lock rotation with `Body.setInertia(body, Infinity)` after creating the body.
+- **When porting a design reference, the reference wins** for colour, type and motion. Using "close enough" existing tokens had to be redone.
+- **Real figures keep their source; examples are labelled as examples.** Reviews are quoted verbatim, and screenshots of client work use sample or masked data.
