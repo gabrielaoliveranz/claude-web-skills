@@ -9,7 +9,7 @@ Every item in this skill is a bug that really happened while shipping three prod
 
 ## How to use it
 
-1. Find the parts of the task in the table below and read only those reference files.
+1. Read `references/field-notes.md` once per project. Then find the parts of the task in the table below and read those reference files.
 2. While building, follow the rules in those files.
 3. Before saying "done", run `scripts/check-pages.mjs` against the site, look at the screenshots, and go through `references/before-done.md`.
 
@@ -25,6 +25,8 @@ Every item in this skill is a bug that really happened while shipping three prod
 | Hiding elements, gradient text, layout shifts | `references/css-traps.md` |
 | Copy, figures, legal pages | `references/content.md` |
 | Finishing any change | `references/before-done.md` |
+| Ready-made code: language links, demo links, app moves, checkout, webhooks, reminder emails | `references/recipes.md` |
+| Every technical bug we hit (PWA, phones, data, SEO, CI, languages) | `references/field-notes.md` |
 
 ## Scripts
 

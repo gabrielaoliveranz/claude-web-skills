@@ -11,7 +11,7 @@ These patterns were refined across a consultancy site, a budgeting app and a Saa
 
 1. **New product:** fill in `assets/DESIGN-template.md` with the owner first (colours, type, tone, references they like), and save it as the product's `DESIGN.md`.
 2. **Existing product:** read its `DESIGN.md` or its CSS tokens before touching anything.
-3. Read the references that match the task:
+3. Read `references/field-notes.md` once per project, then the references that match the task:
 
 | Working on... | Read |
 |---|---|
@@ -23,6 +23,8 @@ These patterns were refined across a consultancy site, a budgeting app and a Saa
 | Animations and scroll effects | `references/motion.md` |
 | Contrast, line length, copy tone | `references/readability.md` |
 | Handing over | `references/review.md` |
+| Ready-made code and the exact values that worked (timings, breakpoints, positions) | `references/recipes.md` |
+| Every design fix we made on real devices (header, cards, footer, widths, themes, copy) | `references/field-notes.md` |
 
 4. Before handing over, run the review in `references/review.md`. If the `web-launch-checklist` skill is installed, also run its `check-pages.mjs`.
 
