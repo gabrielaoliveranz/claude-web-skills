@@ -1,0 +1,55 @@
+# Checks for a static site on every push. Copy to .github/workflows/checks.yml in your site's repo,
+# and copy the skill's scripts/ folder to tools/web-checks/ in that repo.
+# Edit PAGES (and LANGS / SCHEMES if you use them). Cheap checks run first, so most failures show in seconds.
+name: Checks
+
+on:
+  push:
+  pull_request:
+
+env:
+  PAGES: index.html            # comma-separated, e.g. index.html,pricing.html,privacy/index.html
+  LANGS: ""                    # e.g. en,es,pt-PT (added as ?lang=)
+  SCHEMES: light               # light,dark if the site has a dark theme
+
+jobs:
+  check:
+    runs-on: ubuntu-latest     # Linux is case-sensitive, like your host: wrong-case paths fail here, not in production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Files, paths, canonical URLs, share images, sitemap
+        run: node tools/web-checks/check-static.mjs --same footer
+
+      - name: Nothing untracked slipping into a commit
+        run: test -z "$(git ls-files --others --exclude-standard)"
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Start a local server
+        run: |
+          python3 -m http.server 8000 &
+          sleep 1
+
+      - name: Layout at 320 to 1440 px, console and network errors
+        run: node tools/web-checks/check-pages.mjs --base http://localhost:8000 --pages "$PAGES" --langs "$LANGS" --schemes "$SCHEMES" --out shots
+
+      - name: Same with animations off
+        run: node tools/web-checks/check-pages.mjs --base http://localhost:8000 --pages "$PAGES" --reduced-motion --widths 320,1440 --out shots-still
+
+      - name: Contrast on hover, focus and press
+        run: node tools/web-checks/check-states.mjs --base http://localhost:8000 --pages "$PAGES" --schemes "$SCHEMES"
+
+      - name: Keep the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: shots*
