@@ -102,7 +102,7 @@ Real adjustments made after looking at each page on phones, tablets and laptops.
 - **Crop screenshots that show off-palette elements** (a stray orange button in a blue site).
 - **Third-party embeds must take your fonts and colours.** A newsletter form in the provider's own font looked pasted in. Style it, or use your own form connected by API.
 - **Check overlaps at real widths.** At 1272px a large hero name covered the text of a floating card.
-- **A huge moving outline-text ribbon of tools** was replaced by one still line: "SQL · Python · R · Power BI · Excel · Git".
+- **A huge moving outline-text ribbon of tools** was replaced by one still line listing them, separated by middle dots.
 - **Cut empty space between sections by about a third** when the page feels long.
 - **Watch light-to-dark transitions under a sticky header.** The logo passed through a dark box at the seam.
 - **Hero particles or motion must not compete with the headline** while the page loads.

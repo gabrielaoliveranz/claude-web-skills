@@ -105,7 +105,7 @@ Autoplay every 5 to 6 s and stop for good once the visitor touches the carousel.
 
 ```css
 .big-num { font-size: clamp(8rem, 22vw, 17rem); line-height: .8; letter-spacing: -.06em;
-  background: linear-gradient(100deg, #fff 20%, #A9A8FF 45%, #E7A6FF 60%, #fff 80%) 0 0 / 220% 100%;
+  background: linear-gradient(100deg, var(--on-dark) 20%, var(--accent-soft) 45%, var(--accent-2) 60%, var(--on-dark) 80%) 0 0 / 220% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
   padding: .06em .12em .04em .04em; margin: -.06em -.12em -.04em -.04em; }
 ```
@@ -139,7 +139,19 @@ Wrap each word in `<span class="w"><span style="--i:N">word</span></span>`.
 
 ## Seamless marquee
 
-Duplicate the items with JavaScript (`track.append(...items.map(n => n.cloneNode(true)))`) and animate `translateX(-50%)`. Never copy the items by hand, because they fall out of sync.
+```js
+var track = document.querySelector('.marquee-track');
+if (track && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  [].slice.call(track.children).forEach(function (n) { var c = n.cloneNode(true); c.setAttribute('aria-hidden', 'true'); track.appendChild(c); });
+  track.classList.add('is-looping');                    // animate only once the second half exists
+}
+```
+```css
+.marquee-track { --gap: 56px; display: flex; gap: var(--gap); width: max-content; }
+.marquee-track.is-looping { animation: marquee 20s linear infinite; }
+@keyframes marquee { to { transform: translateX(calc(-50% - var(--gap) / 2)); } }   /* not -50%: the gap between halves counts once */
+```
+Never copy the items by hand: a hand-typed second half drifted one separator short and the loop jumped every 20 seconds. With a plain `-50%` the loop point was 28px short; with half a gap subtracted it lands exactly.
 
 ## Equal cards in a row
 
@@ -167,4 +179,64 @@ Requires `<meta name="viewport" content="width=device-width, initial-scale=1, vi
 .carousel-wrap { display: grid; grid-template-columns: minmax(0, 1fr); }
 .carousel-track { width: 100%; display: grid; grid-auto-flow: column; grid-auto-columns: 86%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; }
 .carousel-track > * { scroll-snap-align: center; }
+```
+
+## Visible keyboard focus everywhere
+
+```css
+:where(a, button, [role="button"], input, select, textarea, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.on-dark :focus-visible { outline-color: var(--on-dark); }       /* the accent can vanish on a dark band */
+```
+`:focus-visible` shows the ring for keyboard users only, so there's no reason to remove it for mouse users.
+
+## Icon-only link
+
+```html
+<a class="icon-link" href="https://www.linkedin.com/in/you" aria-label="LinkedIn" title="LinkedIn">
+  <span class="icon icon-linkedin" aria-hidden="true"></span>
+</a>
+```
+```css
+.icon-link { display: inline-grid; place-items: center; width: 52px; height: 52px; color: var(--ink); }
+.icon { width: 22px; height: 22px; background: currentColor; -webkit-mask: var(--src) center / contain no-repeat; mask: var(--src) center / contain no-repeat; }
+.icon-linkedin { --src: url("icons/linkedin.svg"); }
+@media (max-width: 480px) { .icon-link { width: 44px; height: 44px; } }   /* never below 44px */
+```
+The mask takes `currentColor`, so the icon follows hover, focus and dark mode with the link's text colour.
+
+## Email link that also copies
+
+```html
+<a id="email" href="mailto:hello@example.com">Email</a> <span id="email-status" role="status"></span>
+```
+```js
+document.getElementById('email').addEventListener('click', function () {   // no preventDefault: the mail app still opens
+  var address = this.getAttribute('href').replace(/^mailto:/, '');         // one source: the href
+  if (navigator.clipboard) navigator.clipboard.writeText(address).then(function () {
+    var s = document.getElementById('email-status'); s.textContent = 'Copied'; setTimeout(function () { s.textContent = ''; }, 2000);
+  });
+});
+```
+
+## Anchors under a sticky header
+
+```css
+:target, section[id], [id].anchor { scroll-margin-top: calc(var(--header-h, 68px) + 16px); }
+```
+
+## Image that travels with long text
+
+```css
+.case { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.case-media { position: sticky; top: calc(var(--header-h, 68px) + 24px); aspect-ratio: 2 / 1; }
+.case-media img { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 860px) { .case { grid-template-columns: 1fr; } .case-media { position: static; } }
+```
+`align-items: start` stops the media box from stretching to the text's height (which made `object-fit: cover` crop two thirds of a wide screenshot); `aspect-ratio` gives it the image's own shape.
+
+## Hover effects only where hover exists
+
+```css
+@media (hover: hover) { .card:hover { transform: translateY(-4px); } }
+.card:active { background: var(--surface-pressed); }      /* touch screens get a pressed state instead */
 ```
