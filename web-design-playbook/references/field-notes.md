@@ -108,6 +108,8 @@ Real adjustments made after looking at each page on phones, tablets and laptops.
 - **Hero particles or motion must not compete with the headline** while the page loads.
 - **Try big visual changes on a branch** and compare before merging.
 - **Keep what works.** List what not to touch (the copy that lands, the palette, the signature section) before a redesign starts.
+- **A redesign reaches every page, not only the home page.** The newsletter pages, legal pages, 404 page and emails were still on the old fonts and cuts and looked dated next to the new home page. List them before starting, and save the new tokens in the brand notes.
+- **A testimonial with an avatar breaks on phones before anything else.** A single row with the circle, name, company, link and stars wrapped badly at 390px. Use the grid recipe in `recipes.md` (circle beside the name and company, link and stars on their own line below).
 - **Pricing shown as "From $X"** until prices are final, with the same call to action repeated at the end. Use a labelled example dashboard until the first approved case study exists.
 - **Measure the calls to action** (clicks on "Get in touch" vs "Download CV") to know which audience arrives.
 - **SEO per page:** one title and description, with the words a local customer would search for.

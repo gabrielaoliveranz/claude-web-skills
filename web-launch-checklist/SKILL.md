@@ -25,6 +25,7 @@ Every item in this skill is a bug that really happened while building two websit
 | Checkout, subscriptions, webhooks or pricing | `references/payments.md` |
 | Buttons built in JavaScript, or account states | `references/app-code.md` |
 | A static site going live: sitemap, canonical URLs, share images, 404 page, Cloudflare quirks, caching, forms, honest content | `references/static-site-checks.md` |
+| A newsletter issue, an archive page of issues, or a campaign email that has to match the site | `references/newsletter-and-email.md` |
 | Setting up CI, or a check that fails (or passes) for the wrong reason | `references/testing-and-ci.md` |
 | Several languages, including `hreflang` and canonical URLs for sites that switch with `?lang=` | `references/multilingual.md` |
 | Hiding elements, gradient text, layout shifts | `references/css-traps.md` |

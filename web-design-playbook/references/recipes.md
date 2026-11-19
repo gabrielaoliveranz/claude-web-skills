@@ -160,6 +160,25 @@ Never copy the items by hand: a hand-typed second half drifted one separator sho
 .card { display: grid; grid-row: span 4; grid-template-rows: subgrid; }   /* title, text, price, button line up across cards */
 ```
 
+## Review card: avatar beside the name, link and stars below (phones)
+
+Markup: `<div class="who"><span class="av">A</span><footer><span class="nm">Name</span><span class="meta"><span class="co">Company, Town</span><span class="rl"><a class="link" href="...">Read the review on Google</a><span class="stars" role="img" aria-label="5 star review">★★★★★</span></span></span></footer></div>`
+
+```css
+.who { display: grid; grid-template-columns: 52px 1fr; gap: 0 14px; align-items: center; }
+.who .rl { display: inline-flex; align-items: baseline; gap: 10px; }          /* stars sit on the link's baseline, not above it */
+.who .co::after { content: " \00B7 "; }                                        /* middle dot between company and link, desktop only */
+@media (max-width: 600px) {
+  .who { grid-template-areas: "av nm" "av co" "rl rl"; align-items: start; }
+  .who footer, .who .meta { display: contents; }                               /* lets name, company and link join the outer grid */
+  .who .av { grid-area: av; align-self: center; }
+  .who .nm { grid-area: nm; }  .who .co { grid-area: co; }  .who .rl { grid-area: rl; margin-top: 10px; }
+  .who .co::after { content: none; }
+}
+```
+
+The circle sits level with the name and company, the link and stars go on the left below, on one baseline. Check it at 390px and again at tablet and desktop widths, where it must not change.
+
 ## Compact contact modal
 
 One dialog with three fields (name, email, message), a send button in the accent colour (a dark "ink" button disappeared on the dark modal), and a "Message sent" state. No email addresses printed around the page. Open it from a floating button and from "Contact" links.

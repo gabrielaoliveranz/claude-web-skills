@@ -26,6 +26,7 @@ It helps you:
 - **Get found, and look right when shared.** A sitemap, canonical URLs and share images that agree with each other, a `favicon.ico`, a 404 page that still works at a nested address, the Cloudflare and GitHub Pages quirks that make a fixed page look unfixed (redirected `.html` addresses, a 10-minute cache), and honest content: no placeholder sections, no figures without a source.
 - **Launch in several languages.** Testing the longest language, keeping the visitor's language from page to page, matching demos to the visitor's country, and making every language findable on Google when one page translates itself with `?lang=` (Google most likely sees such a page in English and drops the other languages otherwise).
 - **Build app features without a server.** Updates that reach installed phones without interrupting someone mid-entry, reminders through calendar files, PDF and Excel reports made on the device, imports from the CSV files Excel really produces, backups people can trust.
+- **Keep a newsletter in step with the site.** An archive page of past issues, linked from the home page, navigation and sitemap and added to every check list; an HTML email rebuilt on the site's current look with fonts that survive mail apps; and the provider's traps (drafts default to all subscribers, custom-HTML campaigns can't be edited block by block, a live automation must be switched off before its email is edited).
 - **Catch problems automatically, and trust the checks.** Six scripts (below), a GitHub Actions template that runs them on every push, and a guide to the ways a check can pass without testing anything: a selector that quietly retargets, a pipe that hides the exit code, a skip that covers too much, an animation caught mid-fade only on the CI runner.
 
 It comes with six scripts:
@@ -161,6 +162,7 @@ web-launch-checklist/
 │   ├── static-site-checks.md going live: canonical URLs, 404 page, Cloudflare quirks, caching, share images, forms
 │   ├── multilingual.md       several languages, and making each one findable on Google
 │   ├── testing-and-ci.md     checks that tell the truth, and the order to run them
+│   ├── newsletter-and-email.md newsletter issues, archive page, HTML email, provider traps
 │   ├── i18n-architecture.md  translations, currencies, dates, holidays
 │   ├── recipes.md            ready-made code (language links, app moves, checkout, webhooks, emails)
 │   └── ...                   PWA, phones, CSP, payments, CSS traps, content, before-done

@@ -24,6 +24,7 @@ These patterns were refined across a consultancy site, a budgeting app and a Saa
 | Animations, scroll effects, marquees, physics, celebrations | `references/motion.md` |
 | Contrast, tap targets, keyboard focus, icon-only links, headings, copy | `references/readability.md` |
 | Dashboards, tables, charts, KPI cards, contrast audits | `references/dashboards-and-data.md` |
+| A newsletter page or email that should look like the site | `../web-launch-checklist/references/newsletter-and-email.md` |
 | Handing over | `references/review.md` |
 | Ready-made code and the exact values that worked (timings, breakpoints, positions) | `references/recipes.md` |
 | Every design fix we made on real devices (header, cards, footer, widths, themes, copy) | `references/field-notes.md` |
