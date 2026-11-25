@@ -13,6 +13,13 @@ Step-by-step lessons from connecting a domain, Cloudflare, an email provider, Pa
 - **Key-value storage:** prefix keys by type (`app:sub:`, `app:ev:`, `app:trial:`) and give temporary keys an expiry.
 - **Turn on two-factor authentication** for Cloudflare, GitHub, the registrar and the payment provider.
 - **Fallbacks:** if a direct upload fails, a drag-and-drop host such as Netlify Drop is enough to test on a phone.
+- **A Worker from one folder of a repo:** Workers & Pages › Create › Import a repository; build command empty, deploy command `npx wrangler deploy`, and Advanced › Root directory = the app's folder. The drag-and-drop upload only takes static files and leaves the Worker (the API) out. Then in Settings › Domains & Routes turn on the Production `workers.dev` address only.
+- **A private app, behind a sign-in, without writing any login code:** Cloudflare Access. Set up Zero Trust once (Free plan, up to 50 users; it asks for a card but charges nothing), then on the Worker › Domains › Enable Access: Scope **All traffic** (not "Previews only"), policy "Cloudflare account" or a list of emails. Visitors get a one-time code by email. Test in a private window. Your own fetch and browser tools can no longer open the app either, so test locally.
+
+## Google Calendar from an app with no server
+- **Ask only for the app's own calendar:** Google Identity Services token client with scope `https://www.googleapis.com/auth/calendar.app.created`. The app creates its own calendar and can't read or change the person's other calendars, which is easy to explain and to trust. Weekly items become recurring events (`RRULE:FREQ=WEEKLY`) with a popup reminder, so the phone alerts without any push server.
+- **The Client ID:** Google Cloud project › enable Google Calendar API › Google Auth Platform (External; add the person's Gmail as a test user; add the scope under Data Access) › Clients › Web application, with the app's exact address under Authorised JavaScript origins and no redirect URI. The Client ID isn't secret; it can be pasted into the app's settings.
+- **"Google hasn't verified this app"** appears while the project is in testing. Expected for a personal app; a public one needs Google's verification for sensitive scopes.
 
 ## Receiving email at your domain
 - **Cloudflare Email Routing** forwards `hello@`, `hola@` and so on to your inbox. Before turning it on, delete the registrar's old MX and SPF records, or activation fails.

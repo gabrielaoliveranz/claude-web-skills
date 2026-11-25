@@ -17,7 +17,7 @@ Every item in this skill is a bug that really happened while building two websit
 |---|---|
 | Starting a new app, its data or its logic | `references/building-an-app.md` |
 | Updates, reminders, PDF and Excel exports, imports, backups, insights in an app with no server | `references/app-features.md` |
-| Domain, DNS, Cloudflare, email, Paddle, GitHub Pages, forms | `references/connecting-services.md` |
+| Domain, DNS, Cloudflare, email, Paddle, GitHub Pages, forms, a private app behind a sign-in, Google Calendar | `references/connecting-services.md` |
 | Translations, currencies, dates, holidays | `references/i18n-architecture.md` |
 | An installable app, service worker or app version | `references/pwa-releases.md` |
 | Forms, sheets, scrolling or anything on phones | `references/phones.md` |
@@ -26,12 +26,12 @@ Every item in this skill is a bug that really happened while building two websit
 | Buttons built in JavaScript, or account states | `references/app-code.md` |
 | A static site going live: sitemap, canonical URLs, share images, 404 page, Cloudflare quirks, caching, forms, honest content | `references/static-site-checks.md` |
 | A newsletter issue, an archive page of issues, or a campaign email that has to match the site | `references/newsletter-and-email.md` |
-| Setting up CI, or a check that fails (or passes) for the wrong reason | `references/testing-and-ci.md` |
+| Setting up CI, a check that fails (or passes) for the wrong reason, or testing an app update with old data | `references/testing-and-ci.md` |
 | Several languages, including `hreflang` and canonical URLs for sites that switch with `?lang=` | `references/multilingual.md` |
 | Hiding elements, gradient text, layout shifts | `references/css-traps.md` |
 | Copy, figures, legal pages | `references/content.md` |
 | Finishing any change | `references/before-done.md` |
-| Ready-made code: language links, demo links, app moves, checkout, webhooks, reminder emails | `references/recipes.md` |
+| Ready-made code: language links, demo links, app moves, checkout, webhooks, reminder emails, an upgrade test | `references/recipes.md` |
 | Every technical bug we hit (PWA, phones, data, SEO, CI, languages) | `references/field-notes.md` |
 
 ## Scripts

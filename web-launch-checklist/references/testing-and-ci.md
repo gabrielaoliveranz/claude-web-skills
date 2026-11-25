@@ -34,6 +34,12 @@ A check that passes without testing anything is worse than no check: it makes yo
 - **Tool leftovers never ship.** Design tools and AI sessions leave previews, mock-ups and exports in the working folder. Ignore their folders in `.gitignore`, and fail the build on untracked, unignored files.
 - **`npm audit fix` may find nothing to do** when the fix needs a new major version of a dev tool. Upgrade that package directly, then run the checks it powers and break one on purpose to confirm it still fails.
 
+## Testing an app update
+- **Test the upgrade, not only a fresh start.** Real people open the new version with data the old version saved, days later. Build data on the old version (or set its `v` back), move the clock forward, reload, and check what the migration did. Playwright's `page.clock` does both; see "Upgrade test" in `recipes.md`.
+- **Read the live state, not storage, right after a reload.** Migrations run in memory on load; storage is only written on the next change. A test that read `localStorage` reported the migration hadn't run when it had.
+- **When a fix "didn't ship", walk the chain before blaming caches:** is it committed, is it pushed, has the host built it, and what does the live `version.json` say? Twice the cause was an unpushed commit, not a cache.
+- **Compare the file you tested with the file you committed.** When files pass through a copy step (a sync folder, a remote bridge, a build output), compare hashes (`sha256sum`) on both sides. A stale earlier copy was committed once and shipped the old version.
+
 ## A check suite for a static site
 Run these on every push (GitHub Actions or similar), in this order so the cheap ones fail first:
 

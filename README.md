@@ -157,11 +157,11 @@ web-launch-checklist/
 ├── references/
 │   ├── field-notes.md        every technical bug we hit, read once per project
 │   ├── building-an-app.md    variables to decide before coding, data rules, access codes
-│   ├── connecting-services.md domain, Cloudflare, email, Paddle, GitHub Pages
+│   ├── connecting-services.md domain, Cloudflare, private apps, email, Paddle, Google Calendar, GitHub Pages
 │   ├── app-features.md       updates, reminders, PDF/Excel, imports, backups without a server
 │   ├── static-site-checks.md going live: canonical URLs, 404 page, Cloudflare quirks, caching, share images, forms
 │   ├── multilingual.md       several languages, and making each one findable on Google
-│   ├── testing-and-ci.md     checks that tell the truth, and the order to run them
+│   ├── testing-and-ci.md     checks that tell the truth, the order to run them, testing app updates
 │   ├── newsletter-and-email.md newsletter issues, archive page, HTML email, provider traps
 │   ├── i18n-architecture.md  translations, currencies, dates, holidays
 │   ├── recipes.md            ready-made code (language links, app moves, checkout, webhooks, emails)

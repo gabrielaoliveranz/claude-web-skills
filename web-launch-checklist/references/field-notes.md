@@ -25,6 +25,8 @@ Real bugs from a consultancy website, an installable budgeting app and a paid ap
 - **Keep history bounded** (for example the last 80 periods and up to 3,000 entries) so local storage doesn't fill up.
 - **Count everything a total claims to count.** "Saved" missed money added directly to goals.
 - **Show what's real.** "Safe to spend" should reflect real balances and drop when bills are marked paid; people trust numbers that match their bank.
+- **An action shown in a dated row must receive that row's date.** In a week view, tapping the circle on Monday's row marked the item done *today*, so nothing visible changed. Pass the date from the row to every action (`cycleMark(id, date)`), and decide what a tap on a future day means (here: a message, no change).
+- **`.map(fn)` passes the index as the second argument.** `list.map(taskRow)` sent 0, 1, 2… into `taskRow(t, showMove)`, so every row after the first showed a "move" button. Optional flags on functions used with `.map` must test an explicit value (`flag === "move"`), never truthiness, or be called as `list.map(t => taskRow(t))`.
 
 ## Static sites and SEO
 - **Inline `<style>` inside a section fails HTML validation.** Move it to the stylesheet.

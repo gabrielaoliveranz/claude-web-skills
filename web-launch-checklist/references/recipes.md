@@ -56,3 +56,23 @@ Ask for the email in your own small dialog first ("Use the same email you'll sig
   - **monthly plans:** 2 days and 1 day before renewal.
 - Mark each email as sent in storage so it never goes twice.
 - Send from a subdomain (`mail.example.com`), in the customer's language.
+
+## Upgrade test: old data, moved clock
+
+Checks what people see when they open a new version days after the old one saved their data. Run it against a local server; `DB`, `saveLocal()` and the button text are this app's names, adapt them.
+```js
+import { chromium } from "playwright";
+const b = await chromium.launch(), errs = [];
+const p = await (await b.newContext({ viewport: { width: 390, height: 844 }, timezoneId: "Pacific/Auckland", serviceWorkers: "block" })).newPage();
+p.on("pageerror", e => errs.push(e.message));
+await p.clock.install({ time: new Date("2026-11-24T10:00:00+13:00") });   // when the old data was made
+await p.goto("http://localhost:8000/");
+await p.click("text=Start with the sample plan");
+await p.evaluate(() => { DB.v = 4; saveLocal(); });                          // the version people still have
+await p.clock.setFixedTime(new Date("2026-11-26T06:30:00+13:00"));           // the day they open the update
+await p.reload();
+console.log(await p.evaluate(() => ({ v: DB.v, items: DB.tasks.map(t => [t.id, t.due]) })));  // live state, not storage
+await p.screenshot({ path: "upgrade-390.png", fullPage: true });
+console.log(errs.length ? errs : "no page errors"); await b.close();
+```
+
