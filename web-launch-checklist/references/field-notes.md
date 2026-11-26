@@ -31,6 +31,8 @@ Real bugs from a consultancy website, an installable budgeting app and a paid ap
 ## Static sites and SEO
 - **Inline `<style>` inside a section fails HTML validation.** Move it to the stylesheet.
 - **Bump the asset version (`?v=`) on every page** when CSS or JS changes, so phones get it.
+- **Links to `name.html` when the host serves `/name`.** Every crawled link was a redirect and Search Console reported 38 pages as "Page with redirect" (2026-11-27). Link to the clean address everywhere, scripts included.
+- **A canonical added only by script** was reported as "Duplicate, user has not indicated a canonical". Keep the base canonical in the HTML and let the script update that same tag (2026-11-27).
 - **Remove files that are no longer linked.** An old PDF stayed published and indexed by Google.
 - **When moving a page, leave a redirect stub** with `noindex`, full Open Graph tags, and the `#hash` passed along, so old links, QR codes and social previews keep working.
 - **Remove unused scripts, icons and libraries,** and their licence entries, after a redesign.

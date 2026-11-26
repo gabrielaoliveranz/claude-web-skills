@@ -114,6 +114,9 @@ function imageSize(file) {
   return null;
 }
 
+// Does any script of the site rewrite the canonical (one per language)? Then a plain canonical in the HTML is only the starting value.
+const scriptSetsCanonical = ALL.some(f => /\.m?js$/i.test(f) && /canonical/i.test(read(f)));
+
 // ---------- pages ----------
 const pages = ALL.filter(f => /\.html?$/i.test(f) && !VERIFY.test(posix.basename(f)))
   .filter(f => /<html[\s>]|<!doctype html/i.test(read(f).slice(0, 2000)));
@@ -122,6 +125,8 @@ const canonicals = new Map();           // page -> canonical URL
 const stylesheets = new Set();
 const redirects = new Set();            // stub pages that only send visitors elsewhere
 const pageUrls = new Set();             // each page's own absolute URL (canonical, og:url or x-default)
+const pageUrlOf = new Map();            // page file -> its public URL
+const htmlLinks = [];                   // links to a page file by its .html address: {page, ref, file}
 const scripts = new Set(), inline = []; // local JS files and inline scripts, checked for relative fetch()
 const blocks = Object.fromEntries(SAME.map(s => [s, new Map()]));
 
@@ -144,13 +149,14 @@ for (const page of pages) {
   const alternates = tags(html, 'link').filter(t => /\balternate\b/i.test(t.a.rel || '') && t.a.hreflang);
   const xDefault = alternates.find(t => t.a.hreflang.toLowerCase() === 'x-default');
   const pageUrl = canonical || meta(html, 'og:url') || (xDefault && xDefault.a.href);
-  if (pageUrl && /^https?:\/\//.test(pageUrl)) pageUrls.add(pageUrl);
+  if (pageUrl && /^https?:\/\//.test(pageUrl)) { pageUrls.add(pageUrl); pageUrlOf.set(page, pageUrl); }
   if (!noindex && !redirect) {
     if (!meta(html, 'description')) warn(page, 'no meta description (search results and link previews show random text)');
     // A multilingual page may set its canonical by script (one per language); hreflang alternates are the signal then.
     // An installable app (manifest, no sitemap) isn't meant for search results: no canonical needed.
     const isApp = tags(html, 'link').some(t => /\bmanifest\b/i.test(t.a.rel || '')) && !existsSync(join(ROOT, 'sitemap.xml'));
     if (!canonical && !xDefault && !isApp) warn(page, 'no <link rel="canonical">');
+    else if (!canonical && xDefault && !isApp) warn(page, 'no <link rel="canonical"> in the HTML (only a script adds it): Google often reads the raw HTML first and reports "Duplicate, user has not indicated a canonical". Put the canonical of the plain URL in the HTML and let the script change that same tag\'s href per language');
     if (!meta(html, 'og:image')) warn(page, 'no og:image (shared links show no picture)');
   }
   if (canonical) {
@@ -178,8 +184,8 @@ for (const page of pages) {
     }
     if (canonical && /^https?:\/\//.test(canonical)) {
       const cu = new URL(canonical), langs = alternates.filter(t => t !== xDefault && /^https?:\/\//.test(t.a.href || '')).map(t => new URL(t.a.href));
-      if (langs.length && !cu.search && langs.every(u => u.pathname === cu.pathname && u.search))
-        warn(page, `all language versions are this one file told apart by a query string (?lang=), but the canonical is the plain URL, so Google treats every other language as a duplicate and drops it. Give each language its own canonical (set by script from ?lang=) and keep the HTML free of a fixed one`);
+      if (langs.length && !cu.search && !scriptSetsCanonical && langs.every(u => u.pathname === cu.pathname && u.search))
+        warn(page, `all language versions are this one file told apart by a query string (?lang=), but the canonical is the plain URL, so Google treats every other language as a duplicate and drops it. Give each language its own canonical: keep the plain one in the HTML (so it is always there) and have a script change that same tag's href from ?lang=`);
     }
   }
 
@@ -212,7 +218,7 @@ for (const page of pages) {
     if (r.outside) { fail(page, `"${ref}" points above the site root`); continue; }
     const s = served(r.path + (r.trailing ? '/' : ''));
     if (!s.ok) fail(page, `"${ref}" not found${s.wrong ? ` - on disk it's "${s.wrong}" (wrong case: works on Windows and Mac, 404 on the server)` : ''}`);
-    else { referenced.add(s.file); if (tag === 'link' && /stylesheet/i.test(a.rel || '')) stylesheets.add(s.file); if (tag === 'script') scripts.add(s.file); }
+    else { referenced.add(s.file); if (tag === 'link' && /stylesheet/i.test(a.rel || '')) stylesheets.add(s.file); if (tag === 'script') scripts.add(s.file); if (tag === 'a' && /\.html?$/i.test(r.path)) htmlLinks.push({ page, ref, file: s.file }); }
     if (is404 && !ref.startsWith('/') && tag !== 'a') warn(page, `"${ref}" is relative: the 404 page is served at any missing URL, so use a root-absolute path ("/${r.path}")`);
   }
 
@@ -266,6 +272,13 @@ for (const css of stylesheets) {
 for (const css of vw) warn(css, clipped
   ? 'width: 100vw includes the scrollbar; overflow-x on html/body hides the sideways scroll, but the element still runs under the scrollbar on desktops with classic scrollbars (Windows), so its right edge is covered. Use the natural block width where you can'
   : 'width: 100vw includes the scrollbar and causes sideways scroll whenever the page is tall; use the natural block width');
+
+// Links to the .html address of a page the host serves without it: every visit goes through a redirect, and Search Console lists the .html address as "Page with redirect"
+for (const { page, ref, file } of htmlLinks) {
+  const url = pageUrlOf.get(file);
+  if (!url || /\.html?$/i.test(new URL(url).pathname)) continue;
+  fail(page, `"${ref}" links to the .html address, but the page's own URL is ${new URL(url).pathname}${new URL(url).search}: the host redirects one to the other, and Google reports "Page with redirect". Link to ${new URL(url).pathname}`);
+}
 
 // One domain everywhere
 const origins = new Set([...canonicals.values(), ...pageUrls].filter(u => /^https?:/.test(u)).map(u => new URL(u).origin));

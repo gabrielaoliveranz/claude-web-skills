@@ -74,6 +74,16 @@ test('check-static: hreflang codes, duplicates, targets, x-default, relative fet
 test('check-static: a fixed canonical that drops ?lang= languages', async () => expect(await run('check-static.mjs', ['--root', join(FIX, 'hreflang-canonical')]), {
   exit: 0, has: ['treats every other language as a duplicate'],
 }));
+test('check-static: links to the .html address of a page served without it, and a canonical only a script adds', async () => expect(await run('check-static.mjs', ['--root', join(FIX, 'search-console-bugs')]), {
+  exit: 1,
+  has: ['"guia.html" links to the .html address', '"/index.html#prices" links to the .html address', 'no <link rel="canonical"> in the HTML (only a script adds it)'],
+  not: ['FAIL  guia.html:'],
+}));
+test('check-static: clean links and a canonical in the HTML that a script updates report nothing', async () => {
+  const r = await run('check-static.mjs', ['--root', join(FIX, 'search-console-clean')]);
+  expect(r, { exit: 0 });
+  if (warnings(r.out).filter(w => !/untracked/.test(w)).length) throw new Error('unexpected:\n    ' + warnings(r.out).join('\n    '));
+});
 test('check-static: an installable app gets no SEO-only warnings', async () => expect(await run('check-static.mjs', ['--root', join(FIX, 'app')]), {
   exit: 0, not: ['no <link rel="canonical">', 'fetch('],
 }));
