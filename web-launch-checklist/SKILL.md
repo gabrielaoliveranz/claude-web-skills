@@ -18,6 +18,7 @@ Every item in this skill is a bug that really happened while building two websit
 | Starting a new app, its data or its logic | `references/building-an-app.md` |
 | Updates, reminders, PDF and Excel exports, imports, backups, insights in an app with no server | `references/app-features.md` |
 | Domain, DNS, Cloudflare, email, Paddle, GitHub Pages, forms, a private app behind a sign-in, Google Calendar | `references/connecting-services.md` |
+| Syncing data between a person's devices: merging, outdated devices, undo after a bad sync | `references/sync.md` |
 | Translations, currencies, dates, holidays | `references/i18n-architecture.md` |
 | An installable app, service worker or app version | `references/pwa-releases.md` |
 | Forms, sheets, scrolling or anything on phones | `references/phones.md` |

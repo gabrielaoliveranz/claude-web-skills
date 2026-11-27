@@ -41,10 +41,10 @@ Almost every serious bug in a small app comes from a variable nobody thought abo
 - **Nothing moves by itself.** Money (or any balance) only moves when the person confirms it. A plan is an intention, not a movement. Skipping creates no debt.
 - **Warn when two numbers should match and don't** (goals vs savings account), with a button to fix it.
 - **Migrate with the person, not by guessing.** If old data can't tell you the real value, ask once.
-- **Undo as a toast:** take a full snapshot before the action and restore it.
+- **Undo as a toast:** take a full snapshot before the action and restore it. Cancel it when a sync or reload arrives, or the restore wipes what came in.
 - **Demo mode (`?demo`):** sample data built relative to today, covering every feature (repeated purchases, past periods, paid and unpaid items), never saved.
 - **No free-text fields for sensitive data** (for example notes about patients) if the product promises not to hold it.
-- **Encrypted sync, if any, is encrypted on the device:** the server only sees data it can't read.
+- **Encrypted sync, if any, is encrypted on the device:** the server only sees data it can't read. Before building it, read `sync.md`: an outdated device overwriting a newer one was the worst bug in the budgeting app.
 - **Every data change gets a numbered migration.** Store a version `v` in the data; each change adds one `if (db.v < N) { ...; db.v = N }` step to `migrate()`. A step must be safe on any older copy (including one arriving through sync or a backup), must never reset data, and only touches items the app itself created, found by their known ids (a starter plan, sample tasks). Items the person made are theirs: don't rewrite them.
 - **Deleting marks, it doesn't remove.** Every item carries an `id` and `u` (time of last change); a deleted item keeps `del: 1`. Two devices then merge by keeping the newest `u` per id, and a deletion on one device reaches the other.
 - **Anything in the code is public.** A personal planner shipped with its owner's real weekly routine as the starter plan, so anyone with the link could see it. Keep personal data out of the code, or put the app behind a sign-in (see Cloudflare Access in `connecting-services.md`).

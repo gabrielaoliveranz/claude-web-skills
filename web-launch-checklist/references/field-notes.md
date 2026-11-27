@@ -61,3 +61,8 @@ Real bugs from a consultancy website, an installable budgeting app and a paid ap
 - **Fonts loaded from Google** sent visitors' IP addresses to a third party. Self-host them and remove the sentence that named the provider.
 - **Local preview served 404 for clean URLs,** so a working link looked broken. The preview server now tries `.html` and serves `404.html` with status 404.
 
+## Sync between devices (2026-11-27)
+- **An outdated laptop overwrote the phone.** Changes the app made by itself on opening (a new week, a migration) made the old copy look newest. Download first on opening; automatic changes never count as the person's. Details in `sync.md`.
+- **The merge kept new records only,** so ticks and set-asides made on the other device were lost. Merge changes inside existing records too.
+- **An unticked bill came back ticked** from the other device. Remember what was in the last sync so a removal stays removed.
+- **Keep a copy before a sync replaces local data,** with a button to go back, and have the server reject uploads from app versions older than the fix.
