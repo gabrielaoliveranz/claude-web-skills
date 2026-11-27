@@ -28,3 +28,9 @@
 - **Extra bottom space on phones,** so floating buttons don't cover the last links.
 - **Back-to-top on every page,** appearing after about 1.2 screen heights, with its ring centred.
 - **Social links:** only the ones you keep up. Icon-only links need an `aria-label` (see `readability.md`).
+
+## Every inner page needs a visible way home (2026-11-27)
+
+What happened: a profession landing page (`/psicologos/`) had the logo linking to the home page, but no "Home" item in the nav and nothing in the page body. On a phone the logo is small and people do not know it is a link, so the owner reported "there is no button to go home".
+
+Rule now: on every page except the home page, put a plain "Home" link first in the nav (it also shows in the phone menu), and add a "← Back to home" link above the page's first heading, at least 44px tall. Keep both strings in the translation files. Large reference sites do the same with an "All customer stories" link at the top of a story page.
