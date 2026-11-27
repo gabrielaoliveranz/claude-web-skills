@@ -53,3 +53,11 @@ Real bugs from a consultancy website, an installable budgeting app and a paid ap
 - **The app follows the phone's language,** with a switch in settings.
 - **Currency and number format are a separate setting** from language. A Spanish speaker in the US still wants dollars with US formatting.
 - **Links into the app carry `?lang=`** so a shared link opens in the right language.
+
+## Privacy and data (2026-11-27)
+- **The privacy page promised things the system did not do** (90 days vs 400, records with no expiry, two-factor on every account). Details and fixes in `privacy-and-data.md`.
+- **Two languages had untranslated legal pages** because the keys existed in English. Compare with the source file before release.
+- **A "delete" button said "deleted" when offline.** Show success only after the server confirms.
+- **Fonts loaded from Google** sent visitors' IP addresses to a third party. Self-host them and remove the sentence that named the provider.
+- **Local preview served 404 for clean URLs,** so a working link looked broken. The preview server now tries `.html` and serves `404.html` with status 404.
+

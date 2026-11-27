@@ -76,3 +76,24 @@ await p.screenshot({ path: "upgrade-390.png", fullPage: true });
 console.log(errs.length ? errs : "no page errors"); await b.close();
 ```
 
+## Find strings left untranslated
+Flatten each language file and list the long strings that are identical to the English (or source) file. Short identical strings (brand names, ids) are fine.
+```js
+const flat = (o, p = "", r = {}) => { for (const [k, v] of Object.entries(o)) typeof v === "object" ? flat(v, p + k + ".", r) : r[p + k] = v; return r; };
+const en = flat(JSON.parse(fs.readFileSync("i18n/en-GB.json", "utf8")));
+for (const code of ["pt-BR", "pt-PT"]) {
+  const t = flat(JSON.parse(fs.readFileSync(`i18n/${code}.json`, "utf8")));
+  console.log(code, Object.keys(t).filter(k => typeof t[k] === "string" && t[k].length > 25 && t[k] === en[k]));
+}
+```
+Missing keys are a different problem: compare key lists too. Then check the same text in the plain-HTML fallback of each page.
+
+## Test expiry logic with a fake key-value store
+No Cloudflare account needed: import the worker as a module, give it an `env` whose `HN` records every `put` with its `expirationTtl`, post a signed webhook, then print each key's TTL in days. Expect no key printed as having no expiry. Seed old records without TTL, run the scheduled handler (keep the promise passed to `waitUntil` and await it), and print again.
+```js
+const store = new Map();
+const HN = { async get(k, t) { const v = store.get(k); return v ? (t === "json" ? JSON.parse(v.v) : v.v) : null; },
+  async put(k, v, o) { store.set(k, { v: String(v), ttl: o && o.expirationTtl }); }, async delete(k) { store.delete(k); },
+  async list({ prefix }) { return { keys: [...store].filter(([k]) => k.startsWith(prefix)).map(([k, x]) => ({ name: k, expiration: x.ttl ? 1 : undefined })), list_complete: true }; } };
+let P; worker.scheduled({}, env, { waitUntil(p) { P = p; } }); await P;
+```

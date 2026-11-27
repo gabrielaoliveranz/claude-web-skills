@@ -64,3 +64,9 @@ For the automated checks and the order to run them in, see `testing-and-ci.md`. 
 - **Class names collide.** A button given the class `ghost` picked up the absolute positioning of a decorative `.ghost` number elsewhere and was pulled off-screen on phones. Prefix component classes (`btn-ghost`, `step-num`).
 - **When porting a design reference, the reference wins** for colour, type and motion. "Close enough" existing tokens had to be redone.
 - **Try big visual changes on a branch,** compare screenshots, then merge.
+
+## Preview server and 404 page
+- **A plain static server does not mimic the host.** `/guide` returned 404 locally while the live host serves `guide.html`. Make the local server try the path plus `.html`, and answer unknown paths with `404.html` and a real 404 status, so you can test both.
+- **Reloading the same URL with only a changed `#hash` does not reload the page,** so you keep seeing old CSS. Change the query string (`?r=2`) when you reload in a preview pane.
+- **The 404 page is a normal page:** same header and footer, a way home, `noindex`, absolute paths for every asset (it is served from any depth), and text in every language.
+

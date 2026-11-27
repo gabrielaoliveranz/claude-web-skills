@@ -16,6 +16,8 @@
 - **The longest language** (often Portuguese or German) breaks headers and buttons first. Test it.
 - **Legal text:** translate after the base version is reviewed. Until then, show the base text with a "translation in progress" note.
 
+- **A key that exists is not a key that is translated.** A language file can hold the English text under every key and pass every check. Compare it with the source file (recipe in `recipes.md`) before each release.
+
 ## Money, dates and places
 - **Currency symbol rules:** a dollar in its own country shows as "$", elsewhere with a prefix (US$, NZ$, A$). Some currencies use no decimals (for example CLP, COP, JPY).
 - **Accept both "6.10" and "6,10" when reading amounts.** Show round amounts without decimals.

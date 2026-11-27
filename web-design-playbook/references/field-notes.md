@@ -128,3 +128,11 @@ Real adjustments made after looking at each page on phones, tablets and laptops.
   - a mini month calendar on desktop;
   - a day progress bar;
   - the month-end close as a guided ritual.
+
+## Guides, notices and legal pages (2026-11-27)
+- **A notice box in a colour outside the palette looks like an error from another site.** The amber notice came from a default. Use the brand's soft tint (indigo on its pale indigo background) for every notice on every page, and keep the contrast above 4.5:1.
+- **A guide with only text feels unfinished.** Add a screenshot beside the steps that have a screen, and a sticky contents list (recipe in `recipes.md`).
+- **The contents list lit the wrong entry** when a short section never crossed the observer's threshold. Scroll position with a click lock fixed it.
+- **A 404 page needs the full header and footer and a way home,** not a bare message.
+- **Contact forms for sensitive fields:** one line above the fields saying what not to write (for example patient data), in the brand's notice style.
+

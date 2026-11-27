@@ -163,6 +163,7 @@ web-launch-checklist/
 │   ├── multilingual.md       several languages, and making each one findable on Google
 │   ├── testing-and-ci.md     checks that tell the truth, the order to run them, testing app updates
 │   ├── newsletter-and-email.md newsletter issues, archive page, HTML email, provider traps
+│   ├── privacy-and-data.md   privacy promises that match the code, expiry, erasure runbook, self-hosted fonts
 │   ├── i18n-architecture.md  translations, currencies, dates, holidays
 │   ├── recipes.md            ready-made code (language links, app moves, checkout, webhooks, emails)
 │   └── ...                   PWA, phones, CSP, payments, CSS traps, content, before-done

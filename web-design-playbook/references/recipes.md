@@ -259,3 +259,26 @@ document.getElementById('email').addEventListener('click', function () {   // no
 @media (hover: hover) { .card:hover { transform: translateY(-4px); } }
 .card:active { background: var(--surface-pressed); }      /* touch screens get a pressed state instead */
 ```
+
+## Contents list that highlights the right section
+`IntersectionObserver` highlighted the wrong entry: clicking item 8 lit item 7, because a short section never crossed the observer's threshold. Use scroll position, plus a short lock after a click.
+```js
+const links = [...document.querySelectorAll(".toc a")], secs = links.map(a => document.querySelector(a.getAttribute("href")));
+let lock = 0;
+const mark = i => links.forEach((a, n) => a.classList.toggle("on", n === i));
+function update() {
+  if (lock) return;
+  let i = 0;
+  secs.forEach((s, n) => { if (s.getBoundingClientRect().top <= 170) i = n; });
+  if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) i = secs.length - 1;
+  mark(i);
+}
+links.forEach((a, n) => a.addEventListener("click", () => { lock = 1; mark(n); }));
+["wheel", "touchmove", "keydown"].forEach(ev => addEventListener(ev, () => { lock = 0; }, { passive: true }));
+addEventListener("scroll", update, { passive: true }); addEventListener("resize", update); update();
+```
+Test it: click every entry in turn and scroll to twelve positions, and check the lit entry each time (24 of 24 and 12 of 12 passed).
+
+## Heading, text and figure in one grid without gaps
+A section with the figure in a right-hand column and three rows of text on the left left a large gap under the heading, because the figure's row took the height. Give the grid `grid-template-rows: auto auto 1fr`, make the figure span all rows (`grid-row: 1 / span 3`), and let the last row absorb the spare height.
+

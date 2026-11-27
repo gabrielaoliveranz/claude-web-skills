@@ -30,6 +30,7 @@ Every item in this skill is a bug that really happened while building two websit
 | Several languages, including `hreflang` and canonical URLs for sites that switch with `?lang=` | `references/multilingual.md` |
 | Hiding elements, gradient text, layout shifts | `references/css-traps.md` |
 | Copy, figures, legal pages | `references/content.md` |
+| Privacy page promises, data retention and expiry, erasure requests, fonts, untranslated legal pages | `references/privacy-and-data.md` |
 | Finishing any change | `references/before-done.md` |
 | Ready-made code: language links, demo links, app moves, checkout, webhooks, reminder emails, an upgrade test | `references/recipes.md` |
 | Every technical bug we hit (PWA, phones, data, SEO, CI, languages) | `references/field-notes.md` |
