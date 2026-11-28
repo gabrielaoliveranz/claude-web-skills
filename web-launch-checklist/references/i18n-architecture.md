@@ -29,3 +29,7 @@
   - **Decreed holidays:** one-off holidays declared during the year can't be calculated, so plan a hosted file you update.
 - **Demo data matches the language** (country, currency, holidays, names). Use international names that work in every language.
 - **Phone links for messaging apps:** add the country dialling code when the number doesn't start with + or 00.
+
+## Elements built in JavaScript
+- **Give every element created by script its `data-i18n` key** when you create it. Buttons added in a loop (for example "Choose this plan" on each price card) stayed in Spanish on English pages because the script wrote plain text and removed the key, so the language swap never touched them.
+- Dynamic labels such as a modal's close button take their text from the same translation function, with a key for each (`modal.close`), not from an unrelated menu key.

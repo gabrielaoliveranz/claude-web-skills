@@ -66,3 +66,13 @@ Real bugs from a consultancy website, an installable budgeting app and a paid ap
 - **The merge kept new records only,** so ticks and set-asides made on the other device were lost. Merge changes inside existing records too.
 - **An unticked bill came back ticked** from the other device. Remember what was in the last sync so a removal stays removed.
 - **Keep a copy before a sync replaces local data,** with a button to go back, and have the server reject uploads from app versions older than the fix.
+
+## Email, prices and a sales site (2026-11-28)
+- **Mail from a personal inbox failed DMARC** even with SPF passing, because the signature and return path belonged to Gmail. Send through the provider's SMTP with the root domain verified. Details in `email-deliverability.md`.
+- **The key's domain list showed only the sending subdomain,** which would have rejected every From at the root domain. Check it before creating the key.
+- **Prices showed in dollars to testers in two countries.** The provider only localises currencies enabled in the account or in overrides; the page note saying so first appeared for every currency. Show it only when the displayed currency is USD.
+- **A founders price was not half the annual price** in one currency override. Recheck every override after any price change.
+- **Buttons built by script stayed in one language** (see `i18n-architecture.md`).
+- **Redundant footer link:** a link to "all professions" sat next to the profession links it duplicated. When a menu already lists everything, the footer needs only the entries that add something.
+- **Auto-advancing tabs:** when a tab's progress bar ends, go to the next tab; pause on hover, focus or click and restart afterwards, and stop when off screen or with reduced motion.
+

@@ -19,6 +19,7 @@ Code for each of these is in `recipes.md`.
 
 ## Tabs with a sliding highlight
 - A pill that slides under the active tab is a sibling element painted behind the text. Check the active label's contrast against the pill, not the tab bar: an ancestor-only checker reads light text on the light bar and reports a false 1.2:1. `check-states.mjs` reads what is really painted behind the text.
+- **Auto-advancing tabs** (a progress bar fills, then the next tab opens): at the end of the bar go to the next tab and wrap around. Pause on hover, focus and press, restart after the person's choice, stop when the block is off screen and with `prefers-reduced-motion`. About 7 seconds per tab read well.
 - Every tab keeps a `:focus-visible` outline (`outline: 2px solid var(--accent); outline-offset: 2px`).
 
 ## Screenshots and media beside text

@@ -25,6 +25,7 @@ Step-by-step lessons from connecting a domain, Cloudflare, an email provider, Pa
 - **Cloudflare Email Routing** forwards `hello@`, `hola@` and so on to your inbox. Before turning it on, delete the registrar's old MX and SPF records, or activation fails.
 
 ## Sending email (transactional)
+- Sending *as* your domain from a personal inbox (Gmail "Send mail as") has its own traps and a fix: see `email-deliverability.md`.
 - Use a **sending subdomain** (`mail.example.com`) so it never interferes with inbox routing.
 - **Records in Cloudflare (DNS only, not proxied):**
   - the DKIM TXT record (for example `resend._domainkey.mail`);
@@ -42,6 +43,7 @@ Step-by-step lessons from connecting a domain, Cloudflare, an email provider, Pa
   - "includes tax" if your prices are shown tax-inclusive;
   - quantity fixed at 1;
   - no trial at Paddle if your app runs its own trial.
+- **Website review can take days.** Until it ends, buyers may see only the base currency; see `payments.md` for what to show meanwhile.
 - **Country prices:** add overrides per region or currency. Then open every price and check every override's currency. Countries without an override pay the base price (USD).
 - **Countries:** check which countries the provider can't sell to, and don't advertise them.
 - **Client token and price IDs** go in the site's config. The secret API key never goes in the browser.

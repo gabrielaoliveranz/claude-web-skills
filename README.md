@@ -19,9 +19,10 @@ Most problems in a small web product don't show up on your laptop. They show up 
 It helps you:
 - **Plan the app before coding it.** A table of the variables that caused most real bugs (plan vs reality, estimated vs actual amounts, which period a payment belongs to, things that move on their own, undo, old data), plus a method with three test users and acceptance criteria.
 - **Connect the services step by step.** Domain and DNS, Cloudflare Workers and secrets, inbox routing, a sending subdomain for email, Paddle from onboarding to website approval, GitHub Pages, forms and analytics.
+- **Send mail as your own domain without failing DMARC.** Why Gmail's "Send mail as" passes SPF for Gmail but fails DMARC for your domain, how to route it through your email provider instead (domain verification, a domain-limited API key, the SMTP settings), how to test with "Show original", per-language signatures, and reading DNS when your shell can't.
 - **Ship updates people actually get.** Installed apps (PWAs) keep old versions unless the version changes in every place it lives. The skill makes Claude update all of them, and includes a script that does it in one go.
 - **Avoid phone-only bugs.** iPhone zooming into forms, the Android keyboard hiding your buttons, pages that won't scroll, layouts that drift sideways.
-- **Get paid without surprises.** Setting up Paddle or a similar merchant of record: the legal pages they require before approving your site, webhooks that "succeed" but don't unlock anything, a customer paying with a different email than the one they signed up with, prices in the wrong currency for a country.
+- **Get paid without surprises.** Setting up Paddle or a similar merchant of record: the legal pages they require before approving your site, webhooks that "succeed" but don't unlock anything, a customer paying with a different email than the one they signed up with, prices in the wrong currency for a country, a founders price that stopped being half of the annual one in a single currency, and a "prices are in USD" note that must only show when it is true.
 - **Move to your own domain safely.** Redirecting only when the new address is ready, and never asking users to reinstall the app before they have a backup (on iPhone, a reinstalled app starts with empty data).
 - **Get found, and look right when shared.** A sitemap, canonical URLs and share images that agree with each other, a `favicon.ico`, a 404 page that still works at a nested address, the Cloudflare and GitHub Pages quirks that make a fixed page look unfixed (redirected `.html` addresses, a 10-minute cache), and honest content: no placeholder sections, no figures without a source.
 - **Launch in several languages.** Testing the longest language, keeping the visitor's language from page to page, matching demos to the visitor's country, and making every language findable on Google when one page translates itself with `?lang=` (Google most likely sees such a page in English and drops the other languages otherwise).
@@ -159,6 +160,7 @@ web-launch-checklist/
 │   ├── field-notes.md        every technical bug we hit, read once per project
 │   ├── building-an-app.md    variables to decide before coding, data rules, access codes
 │   ├── connecting-services.md domain, Cloudflare, private apps, email, Paddle, Google Calendar, GitHub Pages
+│   ├── email-deliverability.md sending as your domain: SPF, DKIM, DMARC, Gmail send-as, signatures
 │   ├── app-features.md       updates, reminders, PDF/Excel, imports, backups without a server
 │   ├── sync.md               syncing between devices without losing work, and the test for it
 │   ├── static-site-checks.md going live: canonical URLs, 404 page, Cloudflare quirks, caching, share images, forms
