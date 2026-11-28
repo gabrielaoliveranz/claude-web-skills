@@ -87,7 +87,7 @@ To use them in one project only, copy them into that project's `.claude/skills/`
 
    These links always point to the [latest release](https://github.com/gabrielaoliveranz/claude-web-skills/releases/latest).
 2. In **Settings › Capabilities**, check that **Code execution and file creation** is on (called **Create and edit files** in the newer layout). Skills need it.
-3. Go to **[Customize › Skills](https://claude.ai/customize/skills)**, click **+**, then **Create skill › Upload a skill**, and upload one ZIP. Repeat for the other.
+3. Open **Plugins** (in the newer layout), click **Add › Upload plugin**, and upload one ZIP. Repeat for the other. In the older layout the same step was **Customize › Skills › + › Create skill › Upload a skill**.
 4. Make sure both skills are toggled on in the list.
 
 On Team and Enterprise plans, an owner has to allow skills first in **Organization settings › Plugins & skills**. Skills you upload to claude.ai also load in Claude Code when you're signed in with the same account (Claude Code v2.1.273 or later), so you don't need to install them twice.
